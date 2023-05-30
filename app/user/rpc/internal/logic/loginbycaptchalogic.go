@@ -24,7 +24,6 @@ func NewLoginByCaptchaLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Lo
 }
 
 func (l *LoginByCaptchaLogic) LoginByCaptcha(in *pb.LoginByCaptchaRequest) (*pb.LoginResponse, error) {
-	// todo: add your logic here and delete this line
 
 	return &pb.LoginResponse{}, nil
 }

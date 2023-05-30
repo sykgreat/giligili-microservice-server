@@ -1,6 +1,44 @@
 Name: user.rpc
-ListenOn: 0.0.0.0:8080
+ListenOn: 0.0.0.0:7002
+Mode: dev
+
 Etcd:
   Hosts:
-  - 127.0.0.1:2379
+  - 81.71.31.250:2379
   Key: user.rpc
+
+Log:
+  ServiceName: user.rpc
+  Mode: console
+  Encoding: plain
+  Path: logs
+
+MySQL:
+  DataBase: root:20020912hh@tcp(81.71.31.250:3306)/giligili_user?charset=utf8&parseTime=True&loc=Local
+
+Cache:
+  - Host: 81.71.31.250:6379
+    Pass: root
+    Type: node
+    Key: user.rpc
+
+Redis:
+  Host: 81.71.31.250:6379
+  Pass: root
+  Type: node
+  Key: user.rpc
+
+CaptchaRpcConf:
+  Etcd:
+    Hosts:
+      -81.71.31.250:2379
+    Key: captcha.rpc
+
+JwtAuth:
+  AccessSecret: ae0536f9-6450-4606-8e13-5a19ed505da0
+  AccessExpire: 31536000
+
+Snowflake:
+  WorkerName: user.rpc  # 工作节点名称
+  DatacenterName: user.rpc # 数据中心名称
+  Sequence: 7002  # 序列号

@@ -4,28 +4,103 @@ option go_package = "./pb";
 
 package pb;
 
-message LoginRequest {
-    string username = 1;
-    string password = 2;
+// 通用返回
+message Response {
+  int32 result = 1;
 }
 
+// 使用密码登录Request
+message LoginByPasswordRequest {
+  string email = 1;
+  string password = 2;
+}
+
+// 使用验证码登录Request
+message LoginByCaptchaRequest {
+  string email = 1;
+  string captcha = 2;
+}
+
+// 登录返回Response
 message LoginResponse {
-    string token = 1;
+  string accessToken = 1;
+  int64  accessExpire = 2;
+  int64  refreshAfter = 3;
 }
 
+// 退出登录Request
 message LogoutRequest {
-    string token = 1;
+  string email = 1;
 }
 
-message LogoutResponse {
-    bool success = 1;
-}
-
+// 注册Request
 message RegisterRequest {
-    string username = 1;
-    string password = 2;
+  string email = 1;
+  string password = 2;
+  string captcha = 3;
 }
 
-message RegisterResponse {
-    bool success = 1;
+// 获取用户信息Request
+message GetDetailRequest {
+  string email = 1;
+}
+
+// 获取用户信息Response
+message GetDetailResponse {
+  string email = 1;
+  string username = 2;
+  string avatar = 3;
+  string spaceCover = 4;
+  string gender = 5;
+  string birthday = 6;
+  string signature = 7;
+}
+
+// 修改用户信息Request
+message ChangeDetailRequest {
+  string username = 1;
+  string avatar = 2;
+  string space_cover = 3;
+  string gender = 4;
+  string birthday = 5;
+  string signature = 6;
+}
+
+// 通过验证码修改密码Request
+message ChangePasswordByCaptchaRequest {
+  string email = 1;
+  string captcha = 2;
+  string newPassword = 3;
+}
+
+// 通过密码修改密码Request
+message ChangePasswordByPasswordRequest {
+  string email = 1;
+  string ordPassword = 2;
+  string newPassword = 3;
+}
+
+// 生成TokenRequest
+message GenerateTokenReq {
+  int64 userId = 1;
+  string email = 2;
+}
+
+// 生成TokenResponse
+message GenerateTokenResp {
+  string accessToken = 1;
+  int64  accessExpire = 2;
+  int64  refreshAfter = 3;
+}
+
+service UserService {
+  rpc LoginByPassword(LoginByPasswordRequest) returns (LoginResponse);    // 使用密码登录
+  rpc LoginByCaptcha(LoginByCaptchaRequest) returns (LoginResponse);    // 使用验证码登录
+  rpc Logout(LogoutRequest) returns (Response);   // 退出登录
+  rpc Register(RegisterRequest) returns (Response);   // 注册
+  rpc GetDetail(GetDetailRequest) returns (GetDetailResponse);    // 获取用户信息
+  rpc ChangeDetail(ChangeDetailRequest) returns (Response);   // 修改用户信息
+  rpc ChangePasswordByCaptcha(ChangePasswordByCaptchaRequest) returns (Response);  // 通过验证码修改密码
+  rpc ChangePasswordByPassword(ChangePasswordByPasswordRequest) returns (Response);   // 通过密码修改密码
+  rpc GenerateToken(GenerateTokenReq) returns (GenerateTokenResp);   // 生成Token
 }

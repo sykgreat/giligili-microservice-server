@@ -16,6 +16,8 @@ type (
 	ChangeDetailRequest             = pb.ChangeDetailRequest
 	ChangePasswordByCaptchaRequest  = pb.ChangePasswordByCaptchaRequest
 	ChangePasswordByPasswordRequest = pb.ChangePasswordByPasswordRequest
+	GenerateTokenReq                = pb.GenerateTokenReq
+	GenerateTokenResp               = pb.GenerateTokenResp
 	GetDetailRequest                = pb.GetDetailRequest
 	GetDetailResponse               = pb.GetDetailResponse
 	LoginByCaptchaRequest           = pb.LoginByCaptchaRequest
@@ -34,6 +36,7 @@ type (
 		ChangeDetail(ctx context.Context, in *ChangeDetailRequest, opts ...grpc.CallOption) (*Response, error)
 		ChangePasswordByCaptcha(ctx context.Context, in *ChangePasswordByCaptchaRequest, opts ...grpc.CallOption) (*Response, error)
 		ChangePasswordByPassword(ctx context.Context, in *ChangePasswordByPasswordRequest, opts ...grpc.CallOption) (*Response, error)
+		GenerateToken(ctx context.Context, in *GenerateTokenReq, opts ...grpc.CallOption) (*GenerateTokenResp, error)
 	}
 
 	defaultUserService struct {
@@ -85,4 +88,9 @@ func (m *defaultUserService) ChangePasswordByCaptcha(ctx context.Context, in *Ch
 func (m *defaultUserService) ChangePasswordByPassword(ctx context.Context, in *ChangePasswordByPasswordRequest, opts ...grpc.CallOption) (*Response, error) {
 	client := pb.NewUserServiceClient(m.cli.Conn())
 	return client.ChangePasswordByPassword(ctx, in, opts...)
+}
+
+func (m *defaultUserService) GenerateToken(ctx context.Context, in *GenerateTokenReq, opts ...grpc.CallOption) (*GenerateTokenResp, error) {
+	client := pb.NewUserServiceClient(m.cli.Conn())
+	return client.GenerateToken(ctx, in, opts...)
 }

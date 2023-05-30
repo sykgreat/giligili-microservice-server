@@ -29,8 +29,11 @@ type (
 	userModel interface {
 		Insert(ctx context.Context, data *User) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*User, error)
+		FindOneByEmail(ctx context.Context, email string) (*User, error)
 		Update(ctx context.Context, data *User) error
 		Delete(ctx context.Context, id int64) error
+
+		TransCtx(ctx context.Context, fn func(ctx context.Context, session sqlx.Session) error) error
 	}
 
 	defaultUserModel struct {
@@ -90,6 +93,22 @@ func (m *defaultUserModel) FindOne(ctx context.Context, id int64) (*User, error)
 	}
 }
 
+func (m *defaultUserModel) FindOneByEmail(ctx context.Context, email string) (*User, error) {
+	var resp User
+	err := m.QueryRowCtx(ctx, &resp, email, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
+		query := fmt.Sprintf("select %s from %s where `email` = ? limit 1", userRows, m.table)
+		return conn.QueryRowCtx(ctx, v, query, email)
+	})
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
 func (m *defaultUserModel) Insert(ctx context.Context, data *User) (sql.Result, error) {
 	userIdKey := fmt.Sprintf("%s%v", cacheUserIdPrefix, data.Id)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
@@ -115,6 +134,12 @@ func (m *defaultUserModel) formatPrimary(primary any) string {
 func (m *defaultUserModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary any) error {
 	query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", userRows, m.table)
 	return conn.QueryRowCtx(ctx, v, query, primary)
+}
+
+func (m *defaultUserModel) TransCtx(ctx context.Context, fn func(ctx context.Context, session sqlx.Session) error) error {
+	return m.TransactCtx(ctx, func(ctx context.Context, session sqlx.Session) error {
+		return fn(ctx, session)
+	})
 }
 
 func (m *defaultUserModel) tableName() string {

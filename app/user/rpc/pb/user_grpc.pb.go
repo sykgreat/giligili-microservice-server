@@ -27,6 +27,7 @@ const (
 	UserService_ChangeDetail_FullMethodName             = "/pb.UserService/ChangeDetail"
 	UserService_ChangePasswordByCaptcha_FullMethodName  = "/pb.UserService/ChangePasswordByCaptcha"
 	UserService_ChangePasswordByPassword_FullMethodName = "/pb.UserService/ChangePasswordByPassword"
+	UserService_GenerateToken_FullMethodName            = "/pb.UserService/GenerateToken"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -41,6 +42,7 @@ type UserServiceClient interface {
 	ChangeDetail(ctx context.Context, in *ChangeDetailRequest, opts ...grpc.CallOption) (*Response, error)
 	ChangePasswordByCaptcha(ctx context.Context, in *ChangePasswordByCaptchaRequest, opts ...grpc.CallOption) (*Response, error)
 	ChangePasswordByPassword(ctx context.Context, in *ChangePasswordByPasswordRequest, opts ...grpc.CallOption) (*Response, error)
+	GenerateToken(ctx context.Context, in *GenerateTokenReq, opts ...grpc.CallOption) (*GenerateTokenResp, error)
 }
 
 type userServiceClient struct {
@@ -123,6 +125,15 @@ func (c *userServiceClient) ChangePasswordByPassword(ctx context.Context, in *Ch
 	return out, nil
 }
 
+func (c *userServiceClient) GenerateToken(ctx context.Context, in *GenerateTokenReq, opts ...grpc.CallOption) (*GenerateTokenResp, error) {
+	out := new(GenerateTokenResp)
+	err := c.cc.Invoke(ctx, UserService_GenerateToken_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -135,6 +146,7 @@ type UserServiceServer interface {
 	ChangeDetail(context.Context, *ChangeDetailRequest) (*Response, error)
 	ChangePasswordByCaptcha(context.Context, *ChangePasswordByCaptchaRequest) (*Response, error)
 	ChangePasswordByPassword(context.Context, *ChangePasswordByPasswordRequest) (*Response, error)
+	GenerateToken(context.Context, *GenerateTokenReq) (*GenerateTokenResp, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -165,6 +177,9 @@ func (UnimplementedUserServiceServer) ChangePasswordByCaptcha(context.Context, *
 }
 func (UnimplementedUserServiceServer) ChangePasswordByPassword(context.Context, *ChangePasswordByPasswordRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangePasswordByPassword not implemented")
+}
+func (UnimplementedUserServiceServer) GenerateToken(context.Context, *GenerateTokenReq) (*GenerateTokenResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GenerateToken not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -323,6 +338,24 @@ func _UserService_ChangePasswordByPassword_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GenerateToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GenerateTokenReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GenerateToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GenerateToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GenerateToken(ctx, req.(*GenerateTokenReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -361,6 +394,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ChangePasswordByPassword",
 			Handler:    _UserService_ChangePasswordByPassword_Handler,
+		},
+		{
+			MethodName: "GenerateToken",
+			Handler:    _UserService_GenerateToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
