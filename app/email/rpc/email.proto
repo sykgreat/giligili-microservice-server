@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option go_package = "./pb";
+
+package pb;
+
+message SendEmailRequest {
+    string email = 1;
+    string subject = 2;
+    string body = 3;
+}
+
+message SendEmailResponse {
+   int32 result = 1;
+}
+
+service EmailService {
+    rpc SendEmail(SendEmailRequest) returns (SendEmailResponse);
+}

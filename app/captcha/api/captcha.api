@@ -1,0 +1,29 @@
+syntax = "v1"
+
+info(
+	title: "Captcha API"
+	desc: "Captcha API"
+	author: "syk"
+	email: "t663992442@qq.com"
+	version: "0.0.1"
+)
+
+type (
+	GetCaptchaRequest {
+		Email string `json:"email"`
+	}
+
+	GetCaptchaResponse {
+		Code int32  `json:"code"`
+		Msg  string `json:"msg"`
+	}
+)
+
+@server(
+	group: captcha
+	prefix: /captcha
+)
+service captcha {
+	@handler GetCaptcha
+	get /get (GetCaptchaRequest) returns (GetCaptchaResponse)
+}
