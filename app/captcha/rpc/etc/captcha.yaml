@@ -1,0 +1,31 @@
+Name: captcha.rpc
+ListenOn: 0.0.0.0:6002
+Mode: dev
+
+Etcd:
+  Hosts:
+    - 81.71.31.250:2379
+  Key: captcha.rpc
+
+Log:
+  ServiceName: captcha.rpc
+  Mode: console
+  Level: error
+  Encoding: plain
+
+Redis:
+  Host: 81.71.31.250:6379
+  Type: node
+  Pass: root
+  Key: captcha.rpc
+
+Captcha:
+  Length: 6
+  Chars: "0123456789"
+  Expire: 300
+
+EmailRpcConf:
+  Etcd:
+    Hosts:
+      - 81.71.31.250:2379
+    Key: email.rpc

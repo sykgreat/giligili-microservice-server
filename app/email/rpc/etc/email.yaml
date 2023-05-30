@@ -1,0 +1,22 @@
+Name: email.rpc
+ListenOn: 0.0.0.0:5002
+Mode: dev
+
+Etcd:
+  Hosts:
+  - 81.71.31.250:2379
+  Key: email.rpc
+
+Log:
+  ServiceName: email.rpc
+  Mode: console
+  Level: error
+  Encoding: plain
+
+Email:
+  Host: smtp.qq.com
+  Port: '25'
+  User: sykissky@qq.com
+  Password: zuouwyjqnwocbfig
+  Name: 水月空
+  MailType: html

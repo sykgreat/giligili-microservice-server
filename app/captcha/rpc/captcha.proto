@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option go_package = "./pb";
+
+package pb;
+
+message GetCaptchaByEmailReq {
+    string email = 1;
+}
+
+message GetCaptchaByEmailResp {
+    int32 result = 1;
+}
+
+message VerifyCaptchaReq {
+    string email = 1;
+    string captcha = 2;
+}
+
+message VerifyCaptchaResp {
+    int32 result = 1;
+}
+
+service CaptchaService {
+    rpc GetCaptchaByEmail(GetCaptchaByEmailReq) returns (GetCaptchaByEmailResp);
+    rpc VerifyCaptcha(VerifyCaptchaReq) returns (VerifyCaptchaResp);
+}
