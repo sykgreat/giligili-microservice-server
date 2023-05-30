@@ -25,13 +25,15 @@ func NewVerifyCaptchaLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ver
 }
 
 func (l *VerifyCaptchaLogic) VerifyCaptcha(in *pb.VerifyCaptchaReq) (*pb.VerifyCaptchaResp, error) {
+	// 查看是否存在验证码
 	if ctx, err := l.svcCtx.Redis.GetCtx(l.ctx, l.svcCtx.Config.Redis.Key+":"+in.Email); err != nil {
 		logx.Error("redis get error: ", err)
 		return nil, err
-	} else if ctx != in.Captcha {
+	} else if ctx != in.Captcha { // 验证码不正确
 		return nil, errors.New("验证码输入错误，请重新输入！")
 	}
 
+	// 删除验证码
 	if delCtx, err := l.svcCtx.Redis.DelCtx(l.ctx, l.svcCtx.Config.Redis.Key+":"+in.Email); err != nil {
 		logx.Error("redis del error: ", err)
 		return nil, err

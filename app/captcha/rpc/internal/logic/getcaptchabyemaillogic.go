@@ -42,7 +42,7 @@ func (l *GetCaptchaByEmailLogic) GetCaptchaByEmail(in *pb.GetCaptchaByEmailReq) 
 		return nil, err
 	}
 
-	// 发送邮件
+	// 调用emailRpc 发送邮件
 	email, err := l.svcCtx.EmailRpc.SendEmail(
 		l.ctx,
 		&emailservice.SendEmailRequest{
@@ -52,6 +52,7 @@ func (l *GetCaptchaByEmailLogic) GetCaptchaByEmail(in *pb.GetCaptchaByEmailReq) 
 		},
 	)
 	if err != nil {
+		// 发送失败，删除redis中的验证码
 		if ctx, err := l.svcCtx.Redis.DelCtx(l.ctx, l.svcCtx.Config.Redis.Key+":"+in.Email); err != nil {
 			logx.Error("redis del error: ", err)
 			return nil, err

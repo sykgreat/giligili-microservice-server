@@ -2,9 +2,7 @@ package logic
 
 import (
 	"context"
-	"errors"
 	"giligili/app/email/utils/email"
-	"giligili/common"
 
 	"giligili/app/email/rpc/internal/svc"
 	"giligili/app/email/rpc/pb"
@@ -27,9 +25,7 @@ func NewSendEmailLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendEma
 }
 
 func (l *SendEmailLogic) SendEmail(in *pb.SendEmailRequest) (*pb.SendEmailResponse, error) {
-	if !common.VerifyEmailFormat(in.Email) {
-		return nil, errors.New("邮箱格式不正确")
-	}
+	// 发送验证码
 	err := email.Email.Send(in.Email, in.Subject, in.Body)
 	if err != nil {
 		logx.Error("发送邮件失败: ", err)

@@ -26,6 +26,7 @@ func main() {
 	conf.MustLoad(*configFile, &c)
 	ctx := svc.NewServiceContext(c)
 
+	// 初始化验证码
 	captcha.NewCaptcha(c.Captcha.Length, c.Captcha.Chars, c.Captcha.Expire)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {

@@ -9,8 +9,7 @@ import (
 var (
 	once    sync.Once
 	Captcha *captcha
-	// 随机因子
-	factor = rand.New(rand.NewSource(time.Now().UnixNano()))
+	factor  = rand.New(rand.NewSource(time.Now().UnixNano())) // 随机因子
 )
 
 type captcha struct {

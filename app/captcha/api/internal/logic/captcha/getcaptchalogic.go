@@ -27,9 +27,12 @@ func NewGetCaptchaLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetCap
 }
 
 func (l *GetCaptchaLogic) GetCaptcha(req *types.GetCaptchaRequest) (resp *types.GetCaptchaResponse, err error) {
+	// 验证邮箱格式
 	if !common.VerifyEmailFormat(req.Email) {
 		return nil, errors.New("邮箱格式不正确")
 	}
+
+	// 调用rpc服务 获取验证码
 	email, err := l.svcCtx.CaptchaRpc.GetCaptchaByEmail(l.ctx, &captchaservice.GetCaptchaByEmailReq{
 		Email: req.Email,
 	})
