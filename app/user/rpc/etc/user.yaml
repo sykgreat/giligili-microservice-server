@@ -14,7 +14,7 @@ Log:
   Path: logs
 
 MySQL:
-  DataBase: root:20020912hh@tcp(81.71.31.250:3306)/giligili_user?charset=utf8&parseTime=True&loc=Local
+  DataSource: root:20020912hh@tcp(81.71.31.250:3306)/giligili_user?charset=utf8&parseTime=True&loc=Local
 
 Cache:
   - Host: 81.71.31.250:6379
@@ -31,7 +31,7 @@ Redis:
 CaptchaRpcConf:
   Etcd:
     Hosts:
-      -81.71.31.250:2379
+      - 81.71.31.250:2379
     Key: captcha.rpc
 
 JwtAuth:
@@ -39,6 +39,6 @@ JwtAuth:
   AccessExpire: 31536000
 
 Snowflake:
-  WorkerName: user.rpc  # 工作节点名称
-  DatacenterName: user.rpc # 数据中心名称
+  WorkerName: user  # 工作节点名称
+  DatacenterName: user # 数据中心名称
   Sequence: 7002  # 序列号

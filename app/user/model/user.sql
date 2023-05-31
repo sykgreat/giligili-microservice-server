@@ -11,7 +11,7 @@
  Target Server Version : 80028 (8.0.28)
  File Encoding         : 65001
 
- Date: 30/05/2023 15:26:12
+ Date: 31/05/2023 12:39:10
 */
 
 SET NAMES utf8mb4;
@@ -23,22 +23,22 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` bigint unsigned NOT NULL,
-  `created_at` datetime(3) DEFAULT NULL,
-  `updated_at` datetime(3) DEFAULT NULL,
-  `deleted_at` datetime(3) DEFAULT NULL,
-  `username` varchar(30) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '''用户名''',
+  `created_time` datetime(3) NOT NULL ON UPDATE CURRENT_TIMESTAMP(3),
+  `updated_time` datetime(3) NOT NULL ON UPDATE CURRENT_TIMESTAMP(3),
+  `deleted_time` datetime(3) DEFAULT NULL,
+  `username` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '''用户名''',
   `email` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '''邮箱''',
-  `password` varchar(128) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '''密码''',
-  `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '''头像''',
-  `space_cover` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '''空间封面''',
-  `gender` tinyint DEFAULT '0' COMMENT '''性别:0未知、1男、3女''',
-  `birthday` datetime(3) DEFAULT '1970-01-01 00:00:00.000' COMMENT '''生日''',
-  `sign` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '这个人很懒，什么都没有留下' COMMENT '''个性签名''',
-  `client_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '''客户端IP''',
-  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0',
-  `role` tinyint DEFAULT '0',
+  `password` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '''密码''',
+  `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'https://i1.hdslb.com/bfs/face/2c72223afa74b0036daee60cd99c069760b653df.jpg@240w_240h_1c_1s_!web-avatar-space-header.avif' COMMENT '''头像''',
+  `space_cover` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'https://i0.hdslb.com/bfs/space/cb1c3ef50e22b6096fde67febe863494caefebad.png@2560w_400h_100q_1o.webp' COMMENT '''空间封面''',
+  `gender` tinyint NOT NULL DEFAULT '0' COMMENT '''性别:0未知、1男、3女''',
+  `birthday` datetime(3) NOT NULL DEFAULT '1970-01-01 00:00:00.000' COMMENT '''生日''',
+  `sign` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '这个人很懒，什么都没有留下' COMMENT '''个性签名''',
+  `client_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '''客户端IP''',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0',
+  `role` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `idx_user_deleted_at` (`deleted_at`) USING BTREE
+  KEY `idx_user_deleted_at` (`deleted_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;

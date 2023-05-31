@@ -1,11 +1,11 @@
 package svc
 
 import (
+	"encoding/binary"
 	"giligili/app/captcha/rpc/captchaservice"
 	"giligili/app/user/model"
 	"giligili/app/user/rpc/internal/config"
 	"giligili/common"
-	"strconv"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/redis"
@@ -30,18 +30,22 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		return nil
 	}
 
-	workId, err := strconv.ParseInt(c.Snowflake.WorkerName, 10, 64)
-	if err != nil {
-		logx.Error("Snowflake worker name parse error: ", err)
-		return nil
-	}
+	// workId, err := strconv.ParseInt(c.Snowflake.WorkerName, 10, 64)
+	// if err != nil {
+	// 	logx.Error("Snowflake worker name parse error: ", err)
+	// 	return nil
+	// }
+	// datacenterId, err := strconv.ParseInt(c.Snowflake.DatacenterName, 10, 64)
+	// if err != nil {
+	// 	logx.Error("Snowflake worker name parse error: ", err)
+	// 	return nil
+	// }
 
-	datacenterId, err := strconv.ParseInt(c.Snowflake.DatacenterName, 10, 64)
-	if err != nil {
-		logx.Error("Snowflake worker name parse error: ", err)
-		return nil
-	}
-	snowflakes, err := common.NewSnowflake(workId, datacenterId, c.Snowflake.Sequence)
+	snowflakes, err := common.NewSnowflake(
+		int64(binary.BigEndian.Uint32([]byte(c.Snowflake.WorkerName))),
+		int64(binary.BigEndian.Uint32([]byte(c.Snowflake.DatacenterName))),
+		c.Snowflake.Sequence,
+	)
 	if err != nil {
 		logx.Error("Snowflake init error: ", err)
 	}
