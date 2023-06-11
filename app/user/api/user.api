@@ -1,0 +1,139 @@
+syntax = "v1"
+
+info(
+	title: "User Api"
+	desc: "User Api"
+	author: "syk"
+	email: "663992442@qq.com"
+	version: "0.0.1"
+)
+
+type User {
+	Id         int64  `json:"id"`
+	Email      string `json:"email"`
+	Username   string `json:"username"`
+	Avatar     string `json:"avatar"`
+	SpaceCover string `json:"space_cover"`
+	Gender     string `json:"gender"`
+	Birthday   string `json:"birthday"`
+	Sign       string `json:"sign"`
+	ClientIp   string `json:"client_ip"`
+	CreateTime int64  `json:"create_time"`
+	UpdateTime int64  `json:"update_time"`
+	DeleteTime int64  `json:"delete_time"`
+}
+
+type Token {
+	AccessToken  string `json:"access_token"`
+	AccessExpire int64  `json:"access_expire"`
+	RefreshAfter int64  `json:"refresh_after"`
+}
+
+type BaseRequest {
+}
+
+type BaseResponse {
+	Code int    `json:"code"`
+	Msg  string `json:"msg"`
+}
+
+type (
+	RegisterRequest {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+		Captcha  string `json:"captcha"`
+	}
+
+	LoginByCaptchaRequest {
+		Email   string `json:"email"`
+		Captcha string `json:"captcha"`
+	}
+	LoginByPasswordRequest {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+	LoginResponse {
+		Code int    `json:"code"`
+		Msg  string `json:"msg"`
+		Data Token  `json:"data"`
+	}
+
+	ChangePasswordByCaptchaRequest {
+		Email    string `json:"email"`
+		Captcha  string `json:"captcha"`
+		Password string `json:"password"`
+	}
+	ChangePasswordByPasswordRequest {
+		Email       string `json:"email"`
+		OldPassword string `json:"old_password"`
+		NewPassword string `json:"new_password"`
+	}
+)
+
+@server(
+	group: base
+	middleware: GetUserIp
+)
+
+service user {
+	@doc "user register"
+	@handler Register
+	post /register (RegisterRequest) returns (BaseRequest)
+	
+	@doc "user login by captcha"
+	@handler LoginByCaptcha
+	post /login/captcha (LoginByCaptchaRequest) returns (LoginResponse)
+	
+	@doc "user login by password"
+	@handler LoginByPassword
+	post /login/password (LoginByPasswordRequest) returns (LoginResponse)
+}
+
+type (
+	GetUserInfoRequest {
+		UserId int64 `json:"user_id"`
+	}
+	GetUserInfoResponse {
+		Code int    `json:"code"`
+		Msg  string `json:"msg"`
+		Data User   `json:"data"`
+	}
+
+	ChangeDetailRequest {
+		Username   string `json:"username"`
+		Avatar     string `json:"avatar"`
+		SpaceCover string `json:"space_cover"`
+		Gender     string `json:"gender"`
+		Birthday   string `json:"birthday"`
+		Sign       string `json:"sign"`
+		ClientIp   string `json:"client_ip"`
+	}
+)
+
+@server(
+	group: user
+	prefix : /user
+	jwt : JwtAuth
+)
+
+service user {
+	@doc "user logout"
+	@handler Logout
+	post /logout (BaseRequest) returns (BaseResponse)
+	
+	@doc "get user info"
+	@handler GetUserInfo
+	post /info (GetUserInfoRequest) returns (GetUserInfoResponse)
+	
+	@doc "change user detail"
+	@handler ChangeDetail
+	post /info/change (ChangeDetailRequest) returns (BaseResponse)
+	
+	@doc "user change password by captcha"
+	@handler ChangePasswordByCaptcha
+	post /password/change/captcha (ChangePasswordByCaptchaRequest) returns (BaseResponse)
+	
+	@doc "user change password by password"
+	@handler ChangePasswordByPassword
+	post /password/change/password (ChangePasswordByPasswordRequest) returns (BaseResponse)
+}

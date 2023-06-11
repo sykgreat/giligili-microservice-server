@@ -2,8 +2,8 @@ package logic
 
 import (
 	"context"
-	"encoding/json"
 	"strconv"
+	"time"
 
 	"giligili/app/captcha/rpc/captchaservice"
 	"giligili/app/user/rpc/internal/svc"
@@ -71,24 +71,14 @@ func (l *LoginByCaptchaLogic) LoginByCaptcha(in *pb.LoginByCaptchaRequest) (*pb.
 		)
 	}
 
-	// 序列化用户对象
-	marshal, err := json.Marshal(user)
-	if err != nil {
-		return nil, errors.Wrapf(
-			xerr.NewErrMsg("用户序列化失败！"),
-			"json Marshal err: %s", err,
-		)
-	}
+	// 更新用户信息
+	user.ClientIp = in.ClientIp   // 客户端ip
+	user.UpdatedTime = time.Now() // 更新时间
 
-	// 存储用户信息
-	if err := l.svcCtx.Redis.SetCtx(
-		l.ctx,
-		l.svcCtx.Config.Redis.Key+":info:"+strconv.Itoa(int(user.Id)),
-		string(marshal),
-	); err != nil {
+	if err := l.svcCtx.UserModel.Update(l.ctx, user); err != nil {
 		return nil, errors.Wrapf(
-			xerr.NewErrMsg("redis存用户信息失败"),
-			"redis set user info err: %s, ", err,
+			xerr.NewErrMsg("更新用户信息失败！"),
+			"Update user err: %s", err,
 		)
 	}
 

@@ -12,6 +12,7 @@ Log:
   Mode: console
   Encoding: plain
   Path: logs
+  Level: error
 
 MySQL:
   DataSource: root:20020912hh@tcp(81.71.31.250:3306)/giligili_user?charset=utf8&parseTime=True&loc=Local
