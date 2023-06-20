@@ -6,7 +6,6 @@ package pb;
 
 // 通用返回
 message Response {
-  int32 result = 1;
 }
 
 // 使用密码登录Request

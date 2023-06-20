@@ -118,7 +118,5 @@ func (l *ChangeDetailLogic) ChangeDetail(in *pb.ChangeDetailRequest) (*pb.Respon
 		)
 	}
 
-	return &pb.Response{
-		Result: 200,
-	}, nil
+	return &pb.Response{}, nil
 }
