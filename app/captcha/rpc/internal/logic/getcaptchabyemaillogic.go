@@ -2,13 +2,14 @@ package logic
 
 import (
 	"context"
-	"errors"
-	"giligili/app/captcha/utils/captcha"
-	"giligili/app/email/rpc/emailservice"
 
 	"giligili/app/captcha/rpc/internal/svc"
 	"giligili/app/captcha/rpc/pb"
+	"giligili/app/captcha/utils/captcha"
+	"giligili/app/email/rpc/emailservice"
+	"giligili/common/xerr"
 
+	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -29,20 +30,18 @@ func NewGetCaptchaByEmailLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 func (l *GetCaptchaByEmailLogic) GetCaptchaByEmail(in *pb.GetCaptchaByEmailReq) (result *pb.GetCaptchaByEmailResp, err error) {
 	// 判断验证码是否已发送
 	if ctx, err := l.svcCtx.Redis.GetCtx(l.ctx, l.svcCtx.Config.Redis.Key+":"+in.Email); err != nil {
-		logx.Error("redis get error: ", err)
-		return nil, err
+		return nil, errors.Wrapf(xerr.NewErrMsg("redis获取失败"), "redis获取失败 err: %v", err)
 	} else if len(ctx) != 0 {
-		return nil, errors.New("验证码已发送，请勿重复发送")
+		return nil, errors.Wrapf(xerr.NewErrMsg("验证码已发送，请勿重复发送"), "验证码已发送，请勿重复发送")
 	}
 
 	// 生成验证码，并存入redis
 	generate, i := captcha.Captcha.Generate()
 	if err := l.svcCtx.Redis.SetexCtx(l.ctx, l.svcCtx.Config.Redis.Key+":"+in.Email, generate, i); err != nil {
-		logx.Error("redis set error: ", err)
-		return nil, err
+		return nil, errors.Wrapf(xerr.NewErrMsg("redis存储失败"), "redis存储失败 err: %v", err)
 	}
 
-	// 发送邮件
+	// 调用emailRpc 发送邮件
 	email, err := l.svcCtx.EmailRpc.SendEmail(
 		l.ctx,
 		&emailservice.SendEmailRequest{
@@ -52,15 +51,14 @@ func (l *GetCaptchaByEmailLogic) GetCaptchaByEmail(in *pb.GetCaptchaByEmailReq) 
 		},
 	)
 	if err != nil {
+		// 发送失败，删除redis中的验证码
 		if ctx, err := l.svcCtx.Redis.DelCtx(l.ctx, l.svcCtx.Config.Redis.Key+":"+in.Email); err != nil {
-			logx.Error("redis del error: ", err)
-			return nil, err
+			return nil, errors.Wrapf(xerr.NewErrMsg("redis删除失败"), "redis删除失败 err: %v", err)
 		} else if ctx == 0 {
-			return nil, errors.New("redis删除失败")
+			return nil, errors.Wrapf(xerr.NewErrMsg("没有该验证码"), "没有该验证码")
 		}
 
-		logx.Error("发送邮件失败: ", err)
-		return nil, err
+		return nil, errors.Wrapf(xerr.NewErrMsg("发送邮件失败"), "发送邮件失败 err: %v", err)
 	}
 
 	return &pb.GetCaptchaByEmailResp{

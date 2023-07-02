@@ -8,5 +8,6 @@ import (
 type Config struct {
 	rest.RestConf
 
+	// captchaRpc服务配置
 	CaptchaRpcConf zrpc.RpcClientConf
 }

@@ -15,5 +15,5 @@ message SendEmailResponse {
 }
 
 service EmailService {
-    rpc SendEmail(SendEmailRequest) returns (SendEmailResponse);
+    rpc SendEmail(SendEmailRequest) returns (SendEmailResponse);  
 }

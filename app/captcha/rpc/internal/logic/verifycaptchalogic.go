@@ -2,11 +2,12 @@ package logic
 
 import (
 	"context"
-	"errors"
 
 	"giligili/app/captcha/rpc/internal/svc"
 	"giligili/app/captcha/rpc/pb"
+	"giligili/common/xerr"
 
+	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -25,18 +26,18 @@ func NewVerifyCaptchaLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ver
 }
 
 func (l *VerifyCaptchaLogic) VerifyCaptcha(in *pb.VerifyCaptchaReq) (*pb.VerifyCaptchaResp, error) {
+	// 查看是否存在验证码
 	if ctx, err := l.svcCtx.Redis.GetCtx(l.ctx, l.svcCtx.Config.Redis.Key+":"+in.Email); err != nil {
-		logx.Error("redis get error: ", err)
-		return nil, err
-	} else if ctx != in.Captcha {
-		return nil, errors.New("验证码输入错误，请重新输入！")
+		return nil, errors.Wrapf(xerr.NewErrMsg("redis获取失败!"), "redis获取失败!, err: %s", err)
+	} else if ctx != in.Captcha { // 验证码不正确
+		return nil, errors.Wrapf(xerr.NewErrMsg("验证码输入错误，请重新输入!"), "验证码输入错误，请重新输入!")
 	}
 
+	// 删除验证码
 	if delCtx, err := l.svcCtx.Redis.DelCtx(l.ctx, l.svcCtx.Config.Redis.Key+":"+in.Email); err != nil {
-		logx.Error("redis del error: ", err)
-		return nil, err
+		return nil, errors.Wrapf(xerr.NewErrMsg("redis删除失败!"), "redis删除失败!, err: %s", err)
 	} else if delCtx == 0 {
-		return nil, errors.New("验证码已过期，请重新获取！")
+		return nil, errors.Wrapf(xerr.NewErrMsg("验证码已过期，请重新获取!"), "验证码已过期，请重新获取!")
 	}
 
 	return &pb.VerifyCaptchaResp{

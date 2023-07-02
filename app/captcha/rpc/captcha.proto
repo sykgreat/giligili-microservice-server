@@ -4,6 +4,7 @@ option go_package = "./pb";
 
 package pb;
 
+//获取验证码
 message GetCaptchaByEmailReq {
     string email = 1;
 }
@@ -12,6 +13,7 @@ message GetCaptchaByEmailResp {
     int32 result = 1;
 }
 
+//验证验证码
 message VerifyCaptchaReq {
     string email = 1;
     string captcha = 2;

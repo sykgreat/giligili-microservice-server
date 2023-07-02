@@ -1,0 +1,21 @@
+Name: user
+Host: 0.0.0.0
+Port: 7001
+Mode: dev
+
+Log:
+  ServiceName: user.rpc
+  Mode: console
+  Encoding: plain
+  Path: logs
+  Level: error
+
+UserRpcConf:
+  Etcd:
+    Hosts:
+      - 81.71.31.250:2379
+    Key: user.rpc
+
+JwtAuth:
+  AccessSecret: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+  AccessExpire: 3600
