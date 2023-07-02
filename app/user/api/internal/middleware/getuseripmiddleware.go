@@ -29,5 +29,6 @@ func (m *GetUserIpMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 
 		r.Header.Set("X-Real-IP", remoteAddr)
 		next(w, r)
+
 	}
 }
