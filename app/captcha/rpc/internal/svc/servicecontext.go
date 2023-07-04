@@ -10,7 +10,7 @@ import (
 )
 
 type ServiceContext struct {
-	Config   config.Config
+	Config   config.Config             // 基本配置文件
 	Redis    *redis.Redis              // 定义redis
 	EmailRpc emailservice.EmailService // 定义emailRpc服务
 }
