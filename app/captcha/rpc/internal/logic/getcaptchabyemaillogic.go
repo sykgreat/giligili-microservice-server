@@ -36,7 +36,7 @@ func (l *GetCaptchaByEmailLogic) GetCaptchaByEmail(in *pb.GetCaptchaByEmailReq) 
 	}
 
 	// 生成验证码，并存入redis
-	generate, i := captcha.Captcha.Generate()
+	generate, i := captcha.Captcha.Generate() // 生成验证码
 	if err := l.svcCtx.Redis.SetexCtx(l.ctx, l.svcCtx.Config.Redis.Key+":"+in.Email, generate, i); err != nil {
 		return nil, errors.Wrapf(xerr.NewErrMsg("redis存储失败"), "redis存储失败 err: %v", err)
 	}
