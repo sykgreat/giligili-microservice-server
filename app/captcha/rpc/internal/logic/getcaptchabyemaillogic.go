@@ -54,7 +54,7 @@ func (l *GetCaptchaByEmailLogic) GetCaptchaByEmail(in *pb.GetCaptchaByEmailReq) 
 		// 发送失败，删除redis中的验证码
 		if ctx, err := l.svcCtx.Redis.DelCtx(l.ctx, l.svcCtx.Config.Redis.Key+":"+in.Email); err != nil {
 			return nil, errors.Wrapf(xerr.NewErrMsg("redis删除失败"), "redis删除失败 err: %v", err)
-		} else if ctx == 0 {
+		} else if ctx == 0 { // 删除失败，说明redis中没有该验证码
 			return nil, errors.Wrapf(xerr.NewErrMsg("没有该验证码"), "没有该验证码")
 		}
 
