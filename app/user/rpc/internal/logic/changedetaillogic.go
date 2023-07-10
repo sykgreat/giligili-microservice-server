@@ -29,7 +29,7 @@ func NewChangeDetailLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Chan
 
 func (l *ChangeDetailLogic) ChangeDetail(in *pb.ChangeDetailRequest) (*pb.Response, error) {
 	// 查询用户信息
-	one, err := l.svcCtx.UserModel.FindOne(l.ctx, l.ctx.Value("userId").(int64))
+	one, err := l.svcCtx.UserModel.FindOne(l.ctx, in.UserId)
 	if err != nil {
 		return nil, errors.Wrapf(xerr.NewErrMsg("查询失败！"), "change detail failed! %v", err)
 	}

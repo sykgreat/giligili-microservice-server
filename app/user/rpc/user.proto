@@ -68,6 +68,7 @@ message ChangeDetailRequest {
   int64 gender = 4;
   int64 birthday = 5;
   string sign = 6;
+  int64 userId = 7;
 }
 
 // 通过验证码修改密码Request
