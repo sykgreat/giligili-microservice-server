@@ -6,7 +6,6 @@ import (
 	"giligili/common/times"
 	"giligili/common/xerr"
 	"github.com/pkg/errors"
-	"time"
 
 	"giligili/app/user/api/internal/svc"
 	"giligili/app/user/api/internal/types"
@@ -51,6 +50,7 @@ func (l *GetUserInfoLogic) GetUserInfo(req *types.BaseRequest) (resp *types.GetU
 			Id:         userInfo.UserId,
 			CreateTime: times.UnixMilliToTime(userInfo.CreatedAt).Format("2006-01-02 15:04:05"),
 			UpdateTime: times.UnixMilliToTime(userInfo.UpdatedAt).Format("2006-01-02 15:04:05"),
+			ClientIp:   userInfo.ClientIp,
 		},
 	}
 	return

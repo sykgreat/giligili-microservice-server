@@ -22,7 +22,7 @@ func LogoutHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		if err == nil {
 			types.Response(w, resp, 200, "登出成功！")
 		} else {
-			types.Response(w, err, -1, "登出失败！")
+			types.Response(w, err.Error(), -1, "登出失败！")
 		}
 	}
 }

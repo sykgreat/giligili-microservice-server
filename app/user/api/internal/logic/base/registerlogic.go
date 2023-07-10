@@ -38,7 +38,7 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.BaseRe
 		Email:    req.Email,
 		Password: req.Password,
 		Captcha:  req.Captcha,
-		ClientIp: l.ctx.Value("ip").(string),
+		ClientIp: l.ctx.Value("client_ip").(string),
 	})
 	if err != nil {
 		return nil, errors.Wrapf(xerr.NewErrMsg("用户注册失败!"), "user register failed! %v", err)

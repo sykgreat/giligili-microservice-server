@@ -54,7 +54,7 @@ func (l *LoginByPasswordLogic) LoginByPassword(in *pb.LoginByPasswordRequest) (*
 	// 将accessToken和refreshToken存入redis
 	if err = l.svcCtx.Redis.SetexCtx(
 		l.ctx,
-		enum.UserModule+":"+enum.Token+":"+strconv.Itoa(int(userInfo.Id))+":"+enum.AccessToken,
+		enum.UserModule+enum.Token+strconv.Itoa(int(userInfo.Id))+":"+enum.AccessToken,
 		accessToken,
 		l.svcCtx.Jwt.AccessTokenExpire,
 	); err != nil {
@@ -62,7 +62,7 @@ func (l *LoginByPasswordLogic) LoginByPassword(in *pb.LoginByPasswordRequest) (*
 	}
 	if err = l.svcCtx.Redis.SetexCtx(
 		l.ctx,
-		enum.UserModule+":"+enum.Token+":"+strconv.Itoa(int(userInfo.Id))+":"+enum.RefreshToken,
+		enum.UserModule+enum.Token+strconv.Itoa(int(userInfo.Id))+":"+enum.RefreshToken,
 		refreshToken,
 		l.svcCtx.Jwt.RefreshTokenExpire,
 	); err != nil {

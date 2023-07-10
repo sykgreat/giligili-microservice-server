@@ -49,5 +49,6 @@ func (l *GetDetailLogic) GetDetail(in *pb.GetDetailRequest) (*pb.GetDetailRespon
 		UserId:     one.Id,
 		CreatedAt:  one.CreatedTime.Unix(),
 		UpdatedAt:  one.UpdatedTime.Unix(),
+		ClientIp:   one.ClientIp,
 	}, nil
 }

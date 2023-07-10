@@ -26,17 +26,33 @@ func NewJwtAuthMiddleware(jwt *jwt.Jwt, redis *redis.Redis) *JwtAuthMiddleware {
 func (m *JwtAuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		tokenString := r.Header.Get("Authorization")
-		token, claims, err := m.Jwt.ParseToken(tokenString)
-		if err != nil || !token.Valid {
-			http.Error(w, err.Error(), http.StatusUnauthorized)
+		_, claims, err := m.Jwt.ParseToken(tokenString)
+		if err != nil {
+			httpx.OkJson(w, struct {
+				Code int         `json:"code"`
+				Msg  string      `json:"msg"`
+				Data interface{} `json:"data,omitempty"`
+			}{
+				Code: http.StatusUnauthorized,
+				Msg:  "token验证失败！",
+				Data: err.Error(),
+			})
 			return
 		}
 		// 验证token存在 -> 判断token类型
 		if claims.TokenType == 0 { // accessToken
 			// 读取缓存
-			accessToken, err := m.Redis.Get(enum.UserModule + ":" + enum.Token + ":" + strconv.Itoa(int(claims.UserId)) + ":" + enum.AccessToken)
+			accessToken, err := m.Redis.Get(enum.UserModule + enum.Token + strconv.Itoa(int(claims.UserId)) + ":" + enum.AccessToken)
 			if err != nil { // accessToken 不存在
-				http.Error(w, err.Error(), http.StatusUnauthorized)
+				httpx.OkJson(w, struct {
+					Code int         `json:"code"`
+					Msg  string      `json:"msg"`
+					Data interface{} `json:"data,omitempty"`
+				}{
+					Code: http.StatusUnauthorized,
+					Msg:  "token验证失败！",
+					Data: err.Error(),
+				})
 				return
 			}
 			if accessToken == tokenString { // accessToken 未过期
@@ -51,23 +67,47 @@ func (m *JwtAuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 				next(w, r)
 			} else {
 				// 刷新accessToken 和 refreshToken
-				http.Error(w, "token验证失败", http.StatusUnauthorized)
+				httpx.OkJson(w, struct {
+					Code int         `json:"code"`
+					Msg  string      `json:"msg"`
+					Data interface{} `json:"data,omitempty"`
+				}{
+					Code: http.StatusUnauthorized,
+					Msg:  "token验证失败！",
+					Data: err.Error(),
+				})
 				return
 			}
 		} else if claims.TokenType == 1 { // refreshToken
 			// 读取缓存
-			refreshToken, err := m.Redis.Get(enum.UserModule + ":" + enum.Token + ":" + strconv.Itoa(int(claims.UserId)) + ":" + enum.RefreshToken)
+			refreshToken, err := m.Redis.Get(enum.UserModule + enum.Token + strconv.Itoa(int(claims.UserId)) + ":" + enum.RefreshToken)
 			if err != nil { // refreshToken 不存在
-				http.Error(w, err.Error(), http.StatusUnauthorized)
+				httpx.OkJson(w, struct {
+					Code int         `json:"code"`
+					Msg  string      `json:"msg"`
+					Data interface{} `json:"data,omitempty"`
+				}{
+					Code: http.StatusUnauthorized,
+					Msg:  "token验证失败！",
+					Data: err.Error(),
+				})
 				return
 			}
 			if refreshToken != "" { // refreshToken 存在
 				// 刷新accessToken
-				accessToken, err := m.Redis.Get(enum.UserModule + ":" + enum.Token + ":" + strconv.Itoa(int(claims.UserId)) + ":" + enum.AccessToken)
+				accessToken, err := m.Redis.Get(enum.UserModule + enum.Token + strconv.Itoa(int(claims.UserId)) + ":" + enum.AccessToken)
 				if err != nil || accessToken == "" { // accessToken 不存在
 					accessToken, err = m.Jwt.GenerateAccessToken(claims.UserId, claims.Email)
 					if err != nil {
-						http.Error(w, err.Error(), http.StatusUnauthorized)
+						httpx.OkJson(w, struct {
+							Code int         `json:"code"`
+							Msg  string      `json:"msg"`
+							Data interface{} `json:"data,omitempty"`
+						}{
+							Code: http.StatusUnauthorized,
+							Msg:  "token验证失败！",
+							Data: err.Error(),
+						})
 						return
 					}
 					if err := m.Redis.SetexCtx(
@@ -76,7 +116,15 @@ func (m *JwtAuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 						accessToken,
 						7*24*60*60,
 					); err != nil {
-						http.Error(w, err.Error(), http.StatusUnauthorized)
+						httpx.OkJson(w, struct {
+							Code int         `json:"code"`
+							Msg  string      `json:"msg"`
+							Data interface{} `json:"data,omitempty"`
+						}{
+							Code: http.StatusUnauthorized,
+							Msg:  "token验证失败！",
+							Data: err.Error(),
+						})
 						return
 					}
 				}
@@ -87,17 +135,33 @@ func (m *JwtAuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 					Msg  string      `json:"msg"`
 					Data interface{} `json:"data,omitempty"`
 				}{
-					Code: 200,
+					Code: http.StatusOK,
 					Msg:  "token刷新成功！",
 					Data: accessToken,
 				})
 				return
 			} else {
-				http.Error(w, "token验证失败", http.StatusUnauthorized)
+				httpx.OkJson(w, struct {
+					Code int         `json:"code"`
+					Msg  string      `json:"msg"`
+					Data interface{} `json:"data,omitempty"`
+				}{
+					Code: http.StatusUnauthorized,
+					Msg:  "token验证失败！",
+					Data: err.Error(),
+				})
 				return
 			}
 		} else {
-			http.Error(w, "token验证失败", http.StatusUnauthorized)
+			httpx.OkJson(w, struct {
+				Code int         `json:"code"`
+				Msg  string      `json:"msg"`
+				Data interface{} `json:"data,omitempty"`
+			}{
+				Code: http.StatusUnauthorized,
+				Msg:  "token验证失败！",
+				Data: err.Error(),
+			})
 			return
 		}
 	}

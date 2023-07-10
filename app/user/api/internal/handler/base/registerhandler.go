@@ -22,7 +22,7 @@ func RegisterHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		if err == nil {
 			types.Response(w, resp, 200, "注册成功！")
 		} else {
-			types.Response(w, err, -1, "注册失败！")
+			types.Response(w, err.Error(), -1, "注册失败！")
 		}
 	}
 }
