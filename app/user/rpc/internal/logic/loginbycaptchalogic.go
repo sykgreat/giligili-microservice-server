@@ -66,14 +66,16 @@ func (l *LoginByCaptchaLogic) LoginByCaptcha(in *pb.LoginByCaptchaRequest) (*pb.
 	// 将accessToken和refreshToken存入redis
 	if err := l.svcCtx.Redis.SetexCtx(
 		l.ctx,
-		enum.UserModule+":"+enum.Token+":"+strconv.Itoa(int(userInfo.Id))+":"+enum.AccessToken, accessToken,
+		enum.UserModule+":"+enum.Token+":"+strconv.Itoa(int(userInfo.Id))+":"+enum.AccessToken,
+		accessToken,
 		l.svcCtx.Jwt.AccessTokenExpire,
 	); err != nil {
 		return nil, errors.Wrapf(xerr.NewErrMsg("用户登录失败，accessToken存入redis失败!"), "用户登录失败，accessToken存入redis失败!")
 	}
 	if err := l.svcCtx.Redis.SetexCtx(
 		l.ctx,
-		enum.UserModule+":"+enum.Token+":"+strconv.Itoa(int(userInfo.Id))+":"+enum.RefreshToken, refreshToken,
+		enum.UserModule+":"+enum.Token+":"+strconv.Itoa(int(userInfo.Id))+":"+enum.RefreshToken,
+		refreshToken,
 		l.svcCtx.Jwt.RefreshTokenExpire,
 	); err != nil {
 		return nil, errors.Wrapf(xerr.NewErrMsg("用户登录失败，refreshToken存入redis失败!"), "用户登录失败，refreshToken存入redis失败!")

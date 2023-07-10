@@ -21,8 +21,6 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	// 初始化redis
-	r := redis.MustNewRedis(c.Redis.RedisConf)
 	snowflake, err := common.NewSnowflake(c.Snowflake.WorkerId, c.Snowflake.DatacenterId, c.Snowflake.Sequence)
 	if err != nil {
 		panic(err)
@@ -30,7 +28,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:     c,
 		UserModel:  user.NewUserModel(sqlx.NewMysql(c.Mysql.DataSource), c.Cache),
-		Redis:      r,
+		Redis:      redis.MustNewRedis(c.Redis.RedisConf),
 		CaptchaRpc: captchaservice.NewCaptchaService(zrpc.MustNewClient(c.CaptchaRpcConf)),
 		Snowflake:  snowflake,
 		Jwt:        &c.Jwt,
