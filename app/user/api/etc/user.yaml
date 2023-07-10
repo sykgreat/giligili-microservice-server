@@ -1,12 +1,17 @@
 Name: user
 Host: 0.0.0.0
-Port: 8888
+Port: 7001
+
+Log:
+  Mode: console
+  Encoding: plain
 
 Jwt:
   AccessTokenSecret: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
   AccessTokenExpire: 168 # 7天
   RefreshTokenSecret: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
   RefreshTokenExpire: 720 # 30天
+  Issuer: GiligiliAdminSyk
 
 Redis:
   Host: 81.71.31.250:6379
@@ -14,3 +19,9 @@ Redis:
   Type: node
   Tls: false
   Key:
+
+UserRpcConf:
+  Etcd:
+    Hosts:
+      - 81.71.31.250:2379
+    Key: user.rpc

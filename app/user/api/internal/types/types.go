@@ -22,10 +22,8 @@ type User struct {
 }
 
 type Token struct {
-	AccessToken   string `json:"access_token"`
-	RefreshToken  string `json:"refresh_token"`
-	AccessExpire  int64  `json:"access_expire"`
-	RefreshExpire int64  `json:"refresh_expire"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 type BaseRequest struct {
@@ -71,7 +69,7 @@ type GetUserInfoRequest struct {
 }
 
 type GetUserInfoResponse struct {
-	Data User `json:"data"`
+	User User `json:"data"`
 }
 
 type ChangeDetailRequest struct {

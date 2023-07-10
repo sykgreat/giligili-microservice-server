@@ -24,10 +24,8 @@ type User {
 }
 
 type Token {
-	AccessToken   string `json:"access_token"`
-	RefreshToken  string `json:"refresh_token"`
-	AccessExpire  int64  `json:"access_expire"`
-	RefreshExpire int64  `json:"refresh_expire"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 type BaseRequest {
@@ -91,7 +89,7 @@ type (
 		UserId int64 `json:"user_id"`
 	}
 	GetUserInfoResponse {
-		Data User `json:"data"`
+		User User `json:"data"`
 	}
 
 	ChangeDetailRequest {
@@ -118,7 +116,7 @@ service user {
 	
 	@doc "get user info"
 	@handler GetUserInfo
-	post /info (GetUserInfoRequest) returns (GetUserInfoResponse)
+	get /info (BaseRequest) returns (GetUserInfoResponse)
 	
 	@doc "change user detail"
 	@handler ChangeDetail

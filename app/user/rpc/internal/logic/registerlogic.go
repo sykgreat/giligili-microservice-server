@@ -34,18 +34,13 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 }
 
 func (l *RegisterLogic) Register(in *pb.RegisterRequest) (*pb.Response, error) {
-	// 验证邮箱格式
-	if format := common.VerifyEmailFormat(in.Email); !format {
-		return nil, errors.Wrapf(xerr.NewErrMsg("邮箱格式不正确!"), "邮箱格式不正确!")
-	}
-
 	// 验证邮箱是否已被注册
 	email, err := l.svcCtx.UserModel.FindOneByEmail(l.ctx, in.Email)
 	if err != nil && err != sqlc.ErrNotFound { // 数据库查询错误
-		return nil, errors.Wrapf(xerr.NewErrMsg("用户注册失败!"), "用户注册失败!")
+		return nil, errors.Wrapf(xerr.NewErrMsg("用户注册失败!"), "user register failed! %v", err)
 	}
 	if email != nil { // 邮箱已被注册
-		return nil, errors.Wrapf(xerr.NewErrMsg("该邮箱已被注册!"), "该邮箱已被注册!")
+		return nil, errors.Wrapf(xerr.NewErrMsg("该邮箱已被注册!"), "email has been registered!")
 	}
 
 	// 验证验证码
@@ -55,18 +50,18 @@ func (l *RegisterLogic) Register(in *pb.RegisterRequest) (*pb.Response, error) {
 		CaptchaType: enum.CaptchaRegister,
 	})
 	if err != nil { // 验证码错误
-		return nil, errors.Wrapf(xerr.NewErrMsg("验证码输入错误，请重新输入!"), "验证码输入错误，请重新输入!")
+		return nil, errors.Wrapf(xerr.NewErrMsg("验证码输入错误，请重新输入!"), "captcha is incorrect!")
 	}
 
 	// 验证密码
 	if common.VerifyPasswordFormat(in.Password) {
-		return nil, errors.Wrapf(xerr.NewErrMsg("密码不符合要求!"), "密码不符合要求!")
+		return nil, errors.Wrapf(xerr.NewErrMsg("密码不符合要求!"), "password is incorrect!")
 	}
 
 	// 密码加密
 	generatePassword, err := password.GeneratePassword(in.Password)
 	if err != nil { // 密码加密失败
-		return nil, errors.Wrapf(xerr.NewErrMsg("密码生成失败!"), "密码生成失败!")
+		return nil, errors.Wrapf(xerr.NewErrMsg("密码生成失败!"), "password generate failed! %v", err)
 	}
 
 	// 用户信息
@@ -90,7 +85,7 @@ func (l *RegisterLogic) Register(in *pb.RegisterRequest) (*pb.Response, error) {
 	// 插入用户
 	_, err = l.svcCtx.UserModel.Insert(l.ctx, u)
 	if err != nil { // 插入用户失败
-		return nil, errors.Wrapf(xerr.NewErrMsg("用户注册失败!"), "用户注册失败!")
+		return nil, errors.Wrapf(xerr.NewErrMsg("用户注册失败!"), "user register failed! %v", err)
 	}
 
 	return &pb.Response{}, nil

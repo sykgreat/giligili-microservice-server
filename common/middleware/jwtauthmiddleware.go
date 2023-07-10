@@ -72,7 +72,7 @@ func (m *JwtAuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 						r.Context(),
 						enum.UserModule+":"+enum.Token+":"+strconv.Itoa(int(claims.UserId))+":"+enum.AccessToken,
 						accessToken,
-						168,
+						7*24*60*60,
 					); err != nil {
 						http.Error(w, err.Error(), http.StatusUnauthorized)
 						return
@@ -94,6 +94,5 @@ func (m *JwtAuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			http.Error(w, "token验证失败", http.StatusUnauthorized)
 			return
 		}
-		next(w, r)
 	}
 }

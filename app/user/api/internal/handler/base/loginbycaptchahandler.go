@@ -20,9 +20,9 @@ func LoginByCaptchaHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		l := base.NewLoginByCaptchaLogic(r.Context(), svcCtx)
 		resp, err := l.LoginByCaptcha(&req)
 		if err == nil {
-			types.Response(w, resp, 200, "操作成功！")
+			types.Response(w, resp, 200, "登陆成功！")
 		} else {
-			types.Response(w, err, -1, "操作失败！")
+			types.Response(w, err, -1, "登陆失败！")
 		}
 	}
 }

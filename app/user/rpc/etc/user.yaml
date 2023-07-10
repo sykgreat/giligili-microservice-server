@@ -39,7 +39,7 @@ Snowflake:
 
 Jwt:
   AccessTokenSecret: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
-  AccessTokenExpire: 168 # 7天
+  AccessTokenExpire: 604800 # 7 days
   RefreshTokenSecret: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
-  RefreshTokenExpire: 720 # 30天
+  RefreshTokenExpire: 2592000 # 30 days
   Issuer: GiligiliAdminSyk
