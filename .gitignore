@@ -25,3 +25,5 @@ go.work
 .fleet
 
 .vscode
+
+*.DS_Store

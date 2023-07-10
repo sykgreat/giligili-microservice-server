@@ -1,29 +1,34 @@
 syntax = "v1"
 
 info(
-	title: "Captcha API"
-	desc: "Captcha API"
-	author: "syk"
-	email: "t663992442@qq.com"
-	version: "0.0.1"
+    title: "Captcha API"
+    desc: "Captcha API"
+    author: "syk"
+    email: "t663992442@qq.com"
+    version: "0.0.1"
 )
 
 type (
-	GetCaptchaRequest {
-		Email       string `json:"email"`
-		CaptchaType string `json:"captchaType"`
-	}
+    // GetCaptchaRequest 获取验证码请求
+    GetCaptchaRequest {
+        Email string `json:"email"`
+        CaptchaType string `json:"captchaType"`
+    }
 
-	GetCaptchaResponse {
-		Code int32 `json:"code"`
-	}
+    // GetCaptchaResponse 获取验证码响应
+    GetCaptchaResponse {
+        Code int32 `json:"code"`
+    }
 )
 
 @server(
-	group: captcha
-	prefix: /captcha
+    group: captcha
+    prefix: /captcha
 )
 service captcha {
-	@handler GetCaptcha
-	get /get (GetCaptchaRequest) returns (GetCaptchaResponse)
+    @doc(
+        summary : "获取验证码"
+    )
+    @handler GetCaptcha
+    get /get (GetCaptchaRequest) returns (GetCaptchaResponse)
 }

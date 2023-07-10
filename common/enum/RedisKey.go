@@ -1,6 +1,6 @@
 package enum
 
-// RedisKey redis key
+// UserModule 用户模块
 const (
 	// UserModule 用户模块
 	UserModule = "user_module:"
@@ -10,7 +10,10 @@ const (
 	AccessToken = "access"
 	// RefreshToken 用户刷新token
 	RefreshToken = "refresh"
+)
 
+// CaptchaModule 验证码模块
+const (
 	// CaptchaModule 验证码模块
 	CaptchaModule = "captcha_module:"
 	// Captcha 验证码
@@ -19,4 +22,6 @@ const (
 	CaptchaLogin = "login:"
 	// CaptchaRegister 注册验证码
 	CaptchaRegister = "register:"
+	// CaptchaResetPassword 重置密码验证码
+	CaptchaResetPassword = "reset_password:"
 )
