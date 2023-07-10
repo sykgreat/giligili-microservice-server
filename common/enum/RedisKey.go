@@ -7,9 +7,9 @@ const (
 	// Token 用户token
 	Token = "token:"
 	// AccessToken 用户登录token
-	AccessToken = "access:"
+	AccessToken = "access"
 	// RefreshToken 用户刷新token
-	RefreshToken = "refresh:"
+	RefreshToken = "refresh"
 
 	// CaptchaModule 验证码模块
 	CaptchaModule = "captcha_module:"
