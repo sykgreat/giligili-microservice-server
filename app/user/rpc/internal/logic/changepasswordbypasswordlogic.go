@@ -5,6 +5,7 @@ import (
 	"giligili/common/password"
 	"giligili/common/xerr"
 	"github.com/pkg/errors"
+	"time"
 
 	"giligili/app/user/rpc/internal/svc"
 	"giligili/app/user/rpc/pb"
@@ -46,6 +47,7 @@ func (l *ChangePasswordByPasswordLogic) ChangePasswordByPassword(in *pb.ChangePa
 
 	// 修改密码
 	user.Password = generatePassword
+	user.UpdatedTime = time.Now()
 	err = l.svcCtx.UserModel.Update(l.ctx, user)
 	if err != nil {
 		return nil, errors.Wrapf(xerr.NewErrMsg("修改密码失败，请重新尝试！"), "change password failed! %v", err)

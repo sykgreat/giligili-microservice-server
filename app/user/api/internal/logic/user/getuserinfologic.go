@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"giligili/app/user/rpc/userservice"
+	"giligili/common/times"
 	"giligili/common/xerr"
 	"github.com/pkg/errors"
 	"time"
@@ -45,11 +46,11 @@ func (l *GetUserInfoLogic) GetUserInfo(req *types.BaseRequest) (resp *types.GetU
 			Avatar:     userInfo.Avatar,
 			SpaceCover: userInfo.SpaceCover,
 			Sign:       userInfo.Sign,
-			Birthday:   time.Unix(userInfo.Birthday, 0).Format("2006-01-02 15:04:05"),
+			Birthday:   times.UnixMilliToTime(userInfo.Birthday).Format("2006-01-02 15:04:05"),
 			Gender:     userInfo.Gender,
 			Id:         userInfo.UserId,
-			CreateTime: time.Unix(userInfo.CreatedAt, 0).Format("2006-01-02 15:04:05"),
-			UpdateTime: time.Unix(userInfo.UpdatedAt, 0).Format("2006-01-02 15:04:05"),
+			CreateTime: times.UnixMilliToTime(userInfo.CreatedAt).Format("2006-01-02 15:04:05"),
+			UpdateTime: times.UnixMilliToTime(userInfo.UpdatedAt).Format("2006-01-02 15:04:05"),
 		},
 	}
 	return

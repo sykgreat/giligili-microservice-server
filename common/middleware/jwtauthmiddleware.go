@@ -1,10 +1,12 @@
 package middleware
 
 import (
-	"context"
 	"giligili/common/enum"
 	"giligili/common/jwt"
+
+	"context"
 	"github.com/zeromicro/go-zero/core/stores/redis"
+	"github.com/zeromicro/go-zero/rest/httpx"
 	"net/http"
 	"strconv"
 )
@@ -80,11 +82,15 @@ func (m *JwtAuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 				}
 
 				// 将新的accessToken放入body中返回 -> 用于前端刷新
-				_, err = w.Write([]byte(accessToken))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusUnauthorized)
-					return
-				}
+				httpx.OkJson(w, struct {
+					Code int         `json:"code"`
+					Msg  string      `json:"msg"`
+					Data interface{} `json:"data,omitempty"`
+				}{
+					Code: 200,
+					Msg:  "token刷新成功！",
+					Data: accessToken,
+				})
 				return
 			} else {
 				http.Error(w, "token验证失败", http.StatusUnauthorized)

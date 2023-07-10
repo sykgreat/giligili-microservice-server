@@ -68,7 +68,6 @@ message ChangeDetailRequest {
   int64 gender = 4;
   int64 birthday = 5;
   string sign = 6;
-  int64 userId = 7;
 }
 
 // 通过验证码修改密码Request
@@ -106,5 +105,4 @@ service UserService {
   rpc ChangeDetail(ChangeDetailRequest) returns (Response);   // 修改用户信息
   rpc ChangePasswordByCaptcha(ChangePasswordByCaptchaRequest) returns (Response);  // 通过验证码修改密码
   rpc ChangePasswordByPassword(ChangePasswordByPasswordRequest) returns (Response);   // 通过密码修改密码
-  rpc GenerateToken(GenerateTokenReq) returns (GenerateTokenResp);   // 生成Token
 }
