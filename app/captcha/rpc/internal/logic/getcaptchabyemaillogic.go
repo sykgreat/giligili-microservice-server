@@ -2,10 +2,11 @@ package logic
 
 import (
 	"context"
+	"giligili/common/captcha"
+	"giligili/common/enum"
 
 	"giligili/app/captcha/rpc/internal/svc"
 	"giligili/app/captcha/rpc/pb"
-	"giligili/app/captcha/utils/captcha"
 	"giligili/app/email/rpc/emailservice"
 	"giligili/common/xerr"
 
@@ -29,15 +30,15 @@ func NewGetCaptchaByEmailLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 
 func (l *GetCaptchaByEmailLogic) GetCaptchaByEmail(in *pb.GetCaptchaByEmailReq) (result *pb.GetCaptchaByEmailResp, err error) {
 	// 判断验证码是否已发送
-	if ctx, err := l.svcCtx.Redis.GetCtx(l.ctx, l.svcCtx.Config.Redis.Key+":"+in.Email); err != nil {
+	if ctx, err := l.svcCtx.Redis.GetCtx(l.ctx, enum.CaptchaModule+":"+enum.Captcha+":"+in.CaptchaType+":"+in.Email); err != nil {
 		return nil, errors.Wrapf(xerr.NewErrMsg("redis获取失败"), "redis获取失败 err: %v", err)
 	} else if len(ctx) != 0 {
 		return nil, errors.Wrapf(xerr.NewErrMsg("验证码已发送，请勿重复发送"), "验证码已发送，请勿重复发送")
 	}
 
 	// 生成验证码，并存入redis
-	generate, i := captcha.Captcha.Generate()
-	if err := l.svcCtx.Redis.SetexCtx(l.ctx, l.svcCtx.Config.Redis.Key+":"+in.Email, generate, i); err != nil {
+	generate, i := captcha.Captcha.Generate() // 生成验证码
+	if err := l.svcCtx.Redis.SetexCtx(l.ctx, enum.CaptchaModule+":"+enum.Captcha+":"+in.CaptchaType+":"+in.Email, generate, i); err != nil {
 		return nil, errors.Wrapf(xerr.NewErrMsg("redis存储失败"), "redis存储失败 err: %v", err)
 	}
 
@@ -54,7 +55,7 @@ func (l *GetCaptchaByEmailLogic) GetCaptchaByEmail(in *pb.GetCaptchaByEmailReq) 
 		// 发送失败，删除redis中的验证码
 		if ctx, err := l.svcCtx.Redis.DelCtx(l.ctx, l.svcCtx.Config.Redis.Key+":"+in.Email); err != nil {
 			return nil, errors.Wrapf(xerr.NewErrMsg("redis删除失败"), "redis删除失败 err: %v", err)
-		} else if ctx == 0 {
+		} else if ctx == 0 { // 删除失败，说明redis中没有该验证码
 			return nil, errors.Wrapf(xerr.NewErrMsg("没有该验证码"), "没有该验证码")
 		}
 

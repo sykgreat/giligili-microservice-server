@@ -19,10 +19,10 @@ func GetCaptchaHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := captcha.NewGetCaptchaLogic(r.Context(), svcCtx)
 		resp, err := l.GetCaptcha(&req)
-		if err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
+		if err == nil {
+			types.Response(w, resp, 200, "获取验证码成功！")
 		} else {
-			httpx.OkJsonCtx(r.Context(), w, resp)
+			types.Response(w, err, -1, "获取验证码失败！")
 		}
 	}
 }

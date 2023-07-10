@@ -24,17 +24,16 @@ type User {
 }
 
 type Token {
-	AccessToken  string `json:"access_token"`
-	AccessExpire int64  `json:"access_expire"`
-	RefreshAfter int64  `json:"refresh_after"`
+	AccessToken   string `json:"access_token"`
+	RefreshToken  string `json:"refresh_token"`
+	AccessExpire  int64  `json:"access_expire"`
+	RefreshExpire int64  `json:"refresh_expire"`
 }
 
 type BaseRequest {
 }
 
 type BaseResponse {
-	Code int    `json:"code"`
-	Msg  string `json:"msg"`
 }
 
 type (
@@ -53,9 +52,7 @@ type (
 		Password string `json:"password"`
 	}
 	LoginResponse {
-		Code int    `json:"code"`
-		Msg  string `json:"msg"`
-		Data Token  `json:"data"`
+		Data Token `json:"data"`
 	}
 
 	ChangePasswordByCaptchaRequest {
@@ -94,9 +91,7 @@ type (
 		UserId int64 `json:"user_id"`
 	}
 	GetUserInfoResponse {
-		Code int    `json:"code"`
-		Msg  string `json:"msg"`
-		Data User   `json:"data"`
+		Data User `json:"data"`
 	}
 
 	ChangeDetailRequest {
@@ -113,7 +108,7 @@ type (
 @server(
 	group: user
 	prefix : /user
-	jwt : JwtAuth
+	middleware : JwtAuthMiddleware
 )
 
 service user {

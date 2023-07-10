@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"giligili/app/email/utils/email"
+	"giligili/common/email"
 
 	"giligili/app/email/rpc/internal/config"
 	"giligili/app/email/rpc/internal/server"

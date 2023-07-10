@@ -19,10 +19,10 @@ func ChangePasswordByPasswordHandler(svcCtx *svc.ServiceContext) http.HandlerFun
 
 		l := user.NewChangePasswordByPasswordLogic(r.Context(), svcCtx)
 		resp, err := l.ChangePasswordByPassword(&req)
-		if err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
+		if err == nil {
+			types.Response(w, resp, 200, "操作成功！")
 		} else {
-			httpx.OkJsonCtx(r.Context(), w, resp)
+			types.Response(w, err, -1, "操作失败！")
 		}
 	}
 }

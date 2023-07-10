@@ -1,21 +1,9 @@
 Name: user
 Host: 0.0.0.0
-Port: 7001
-Mode: dev
+Port: 8888
 
-Log:
-  ServiceName: user.rpc
-  Mode: console
-  Encoding: plain
-  Path: logs
-  Level: error
-
-UserRpcConf:
-  Etcd:
-    Hosts:
-      - 81.71.31.250:2379
-    Key: user.rpc
-
-JwtAuth:
-  AccessSecret: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
-  AccessExpire: 3600
+Jwt:
+  AccessTokenSecret: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+  AccessTokenExpire: 168 # 7天
+  RefreshTokenSecret: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+  RefreshTokenExpire: 720 # 30天

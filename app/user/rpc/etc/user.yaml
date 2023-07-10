@@ -1,33 +1,29 @@
 Name: user.rpc
 ListenOn: 0.0.0.0:7002
-Mode: dev
-
 Etcd:
   Hosts:
   - 81.71.31.250:2379
   Key: user.rpc
 
 Log:
-  ServiceName: user.rpc
   Mode: console
   Encoding: plain
-  Path: logs
-  Level: error
 
-MySQL:
-  DataSource: root:20020912hh@tcp(81.71.31.250:3306)/giligili_user?charset=utf8&parseTime=True&loc=Local
+Mysql:
+  DataSource: root:20020912mysql@tcp(81.71.31.250:3306)/giligili_user?charset=utf8&parseTime=True&loc=Local
+
+Redis:
+    Host: 81.71.31.250:6379
+    Pass:
+    Type: node
+    Tls: false
+    Key:
 
 Cache:
   - Host: 81.71.31.250:6379
-    Pass: root
+    Pass:
     Type: node
-    Key: user.rpc
-
-Redis:
-  Host: 81.71.31.250:6379
-  Pass: root
-  Type: node
-  Key: user.rpc
+    Tls: false
 
 CaptchaRpcConf:
   Etcd:
@@ -35,11 +31,15 @@ CaptchaRpcConf:
       - 81.71.31.250:2379
     Key: captcha.rpc
 
-JwtAuth:
-  AccessSecret: ae0536f9-6450-4606-8e13-5a19ed505da0
-  AccessExpire: 31536000
-
 Snowflake:
-  WorkerName: user  # 工作节点名称
-  DatacenterName: user # 数据中心名称
-  Sequence: 7002  # 序列号
+  timestamp: 0
+  workerId: 0
+  datacenterId: 0
+  sequence: 0
+
+Jwt:
+  AccessTokenSecret: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+  AccessTokenExpire: 168 # 7天
+  RefreshTokenSecret: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+  RefreshTokenExpire: 720 # 30天
+  Issuer: GiligiliAdminSyk

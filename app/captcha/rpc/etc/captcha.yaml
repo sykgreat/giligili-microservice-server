@@ -16,8 +16,7 @@ Log:
 Redis:
   Host: 81.71.31.250:6379
   Type: node
-  Pass: root
-  Key: captcha.rpc
+  Pass:
 
 Captcha:
   Length: 6

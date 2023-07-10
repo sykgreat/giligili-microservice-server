@@ -36,34 +36,36 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/logout",
-				Handler: user.LogoutHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/info",
-				Handler: user.GetUserInfoHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/info/change",
-				Handler: user.ChangeDetailHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/password/change/captcha",
-				Handler: user.ChangePasswordByCaptchaHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/password/change/password",
-				Handler: user.ChangePasswordByPasswordHandler(serverCtx),
-			},
-		},
-		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.JwtAuthMiddleware},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/logout",
+					Handler: user.LogoutHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/info",
+					Handler: user.GetUserInfoHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/info/change",
+					Handler: user.ChangeDetailHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/password/change/captcha",
+					Handler: user.ChangePasswordByCaptchaHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/password/change/password",
+					Handler: user.ChangePasswordByPasswordHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/user"),
 	)
 }
