@@ -18,9 +18,9 @@ type User {
 	Birthday   string `json:"birthday"`
 	Sign       string `json:"sign"`
 	ClientIp   string `json:"client_ip"`
-	CreateTime int64  `json:"create_time"`
-	UpdateTime int64  `json:"update_time"`
-	DeleteTime int64  `json:"delete_time"`
+	CreateTime string `json:"create_time"`
+	UpdateTime string `json:"update_time"`
+	DeleteTime string `json:"delete_time"`
 }
 
 type Token {

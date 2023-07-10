@@ -47,6 +47,9 @@ func (l *GetUserInfoLogic) GetUserInfo(req *types.BaseRequest) (resp *types.GetU
 			Sign:       userInfo.Sign,
 			Birthday:   time.Unix(userInfo.Birthday, 0).Format("2006-01-02 15:04:05"),
 			Gender:     userInfo.Gender,
+			Id:         userInfo.UserId,
+			CreateTime: time.Unix(userInfo.CreatedAt, 0).Format("2006-01-02 15:04:05"),
+			UpdateTime: time.Unix(userInfo.UpdatedAt, 0).Format("2006-01-02 15:04:05"),
 		},
 	}
 	return

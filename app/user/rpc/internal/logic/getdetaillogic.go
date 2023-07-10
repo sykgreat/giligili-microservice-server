@@ -46,5 +46,8 @@ func (l *GetDetailLogic) GetDetail(in *pb.GetDetailRequest) (*pb.GetDetailRespon
 		Sign:       one.Sign,
 		Birthday:   one.Birthday.Unix(),
 		Gender:     gender,
+		UserId:     one.Id,
+		CreatedAt:  one.CreatedTime.Unix(),
+		UpdatedAt:  one.UpdatedTime.Unix(),
 	}, nil
 }
