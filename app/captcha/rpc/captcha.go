@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"giligili/app/captcha/utils/captcha"
+	"giligili/common/captcha"
 
 	"giligili/app/captcha/rpc/internal/config"
 	"giligili/app/captcha/rpc/internal/server"

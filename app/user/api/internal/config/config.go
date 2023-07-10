@@ -1,16 +1,13 @@
 package config
 
-import (
-	"github.com/zeromicro/go-zero/rest"
-	"github.com/zeromicro/go-zero/zrpc"
-)
+import "github.com/zeromicro/go-zero/rest"
 
 type Config struct {
 	rest.RestConf
-	JwtAuth struct {
-		AccessSecret string
-		AccessExpire int64
+	Jwt struct {
+		AccessTokenSecret  string
+		AccessExpire       int64
+		RefreshExpire      int64
+		RefreshTokenSecret string
 	}
-
-	UserRpcConf zrpc.RpcClientConf
 }

@@ -7,20 +7,20 @@ import (
 
 type Snowflake struct {
 	sync.Mutex         // 锁
-	timestamp    int64 // 时间戳 ，毫秒
-	workerid     int64 // 工作节点
-	datacenterid int64 // 数据中心机房id
-	sequence     int64 // 序列号
+	Timestamp    int64 // 时间戳 ，毫秒
+	WorkerId     int64 // 工作节点
+	DatacenterId int64 // 数据中心机房id
+	Sequence     int64 // 序列号
 }
 
 // NewSnowflake 创建一个雪花算法实例
-func NewSnowflake(workerid, datacenterid, sequence int64) (*Snowflake, error) {
+func NewSnowflake(workerId, datacenterId, sequence int64) (*Snowflake, error) {
 	// 生成一个新节点
 	sf := new(Snowflake)
-	sf.workerid = workerid
-	sf.datacenterid = datacenterid
-	sf.sequence = sequence
-	sf.timestamp = time.Now().Unix() // 设置初始时间戳
+	sf.WorkerId = workerId
+	sf.DatacenterId = datacenterId
+	sf.Sequence = sequence
+	sf.Timestamp = time.Now().Unix() // 设置初始时间戳
 
 	// 检查有效性
 	if err := sf.ValidateSnowflake(); err != nil {
@@ -49,39 +49,39 @@ const (
 func (s *Snowflake) NextVal() int64 {
 	s.Lock()
 	now := time.Now().UnixNano() / 1000000 // 转毫秒
-	if s.timestamp == now {
+	if s.Timestamp == now {
 		// 当同一时间戳（精度：毫秒）下多次生成id会增加序列号
-		s.sequence = (s.sequence + 1) & sequenceMask
-		if s.sequence == 0 {
+		s.Sequence = (s.Sequence + 1) & sequenceMask
+		if s.Sequence == 0 {
 			// 如果当前序列超出12bit长度，则需要等待下一毫秒
 			// 下一毫秒将使用sequence:0
-			for now <= s.timestamp {
+			for now <= s.Timestamp {
 				now = time.Now().UnixNano() / 1000000
 			}
 		}
 	} else {
 		// 不同时间戳（精度：毫秒）下直接使用序列号：0
-		s.sequence = 0
+		s.Sequence = 0
 	}
 	t := now - epoch
 	if t > timestampMax {
 		s.Unlock()
 		return 0
 	}
-	s.timestamp = now
-	r := int64((t)<<timestampShift | (s.datacenterid << datacenteridShift) | (s.workerid << workeridShift) | (s.sequence))
+	s.Timestamp = now
+	r := int64((t)<<timestampShift | (s.DatacenterId << datacenteridShift) | (s.WorkerId << workeridShift) | (s.Sequence))
 	s.Unlock()
 	return r
 }
 
-// ValidateSnowflake 检查snowflake算法生成的workerid和datacenterid是否有效
+// ValidateSnowflake 检查snowflake算法生成的workerId和datacenterId是否有效
 func (s *Snowflake) ValidateSnowflake() error {
-	// 检查workerid
-	if s.workerid < 0 || s.workerid > workeridMax {
+	// 检查workerId
+	if s.WorkerId < 0 || s.WorkerId > workeridMax {
 		return nil
 	}
-	// 检查datacenterid
-	if s.datacenterid < 0 || s.datacenterid > datacenteridMax {
+	// 检查datacenterId
+	if s.DatacenterId < 0 || s.DatacenterId > datacenteridMax {
 		return nil
 	}
 	return nil

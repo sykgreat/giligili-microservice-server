@@ -34,7 +34,8 @@ func (l *GetCaptchaLogic) GetCaptcha(req *types.GetCaptchaRequest) (resp *types.
 
 	// 调用rpc服务 获取验证码
 	email, err := l.svcCtx.CaptchaRpc.GetCaptchaByEmail(l.ctx, &captchaservice.GetCaptchaByEmailReq{
-		Email: req.Email,
+		Email:       req.Email,
+		CaptchaType: req.CaptchaType,
 	})
 	if err != nil {
 		logx.Error("获取验证码失败: ", err)
@@ -42,6 +43,5 @@ func (l *GetCaptchaLogic) GetCaptcha(req *types.GetCaptchaRequest) (resp *types.
 	}
 	return &types.GetCaptchaResponse{
 		Code: email.Result,
-		Msg:  "验证码已发送至邮箱，请注意查收！",
 	}, nil
 }

@@ -5,7 +5,7 @@ import (
 )
 
 func TestPassword_GeneratePassword(t *testing.T) {
-	s, err := GeneratePassword("123456")
+	s, err := GeneratePassword("qwer1234")
 	if err != nil {
 		t.Error(err)
 	}
@@ -13,7 +13,7 @@ func TestPassword_GeneratePassword(t *testing.T) {
 }
 
 func TestPassword_ComparePassword(t *testing.T) {
-	err := ComparePassword("$2a$10$ik0m3lEvyzFkXQHXa3TsOeXqEs/pcLCkcOIMfmMUmlewAlA1edzCq", "123456")
+	err := ComparePassword("$2a$10$8KXVl2xzjkD1LzfOHQCeeuS.6J4Z0n4CEo16ArJBcNh9WkYxB7H/u", "qwer1234")
 	if err != nil {
 		t.Error(err)
 	}

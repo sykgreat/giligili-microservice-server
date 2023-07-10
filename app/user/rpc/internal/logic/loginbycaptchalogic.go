@@ -2,15 +2,16 @@ package logic
 
 import (
 	"context"
-	"strconv"
-	"time"
-
 	"giligili/app/captcha/rpc/captchaservice"
+	"giligili/common"
+	"giligili/common/enum"
+	"giligili/common/xerr"
+	"github.com/pkg/errors"
+	"strconv"
+
 	"giligili/app/user/rpc/internal/svc"
 	"giligili/app/user/rpc/pb"
-	"giligili/common/xerr"
 
-	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -29,62 +30,57 @@ func NewLoginByCaptchaLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Lo
 }
 
 func (l *LoginByCaptchaLogic) LoginByCaptcha(in *pb.LoginByCaptchaRequest) (*pb.LoginResponse, error) {
-	// 通过邮箱查询用户信息
-	user, err := l.svcCtx.UserModel.FindOneByEmail(l.ctx, in.Email)
-	if err != nil {
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "根据邮箱查询用户信息失败, email:%s,err:%v", in.Email, err)
-	}
-	if user == nil {
-		return nil, errors.Wrapf(xerr.NewErrMsg("用户不存在"), "email:%s", in.Email)
+	// 验证邮箱格式
+	if format := common.VerifyEmailFormat(in.Email); !format {
+		return nil, errors.Wrapf(xerr.NewErrMsg("邮箱格式不正确!"), "邮箱格式不正确!")
 	}
 
-	// 通过captchaRpc验证码校验
-	if verifyResult, err := l.svcCtx.CaptchaRpc.VerifyCaptcha(l.ctx, &captchaservice.VerifyCaptchaReq{
-		Email:   in.Email,
-		Captcha: in.Captcha,
-	}); err != nil {
-		return nil, errors.Wrapf(xerr.NewErrMsg("验证码校验失败"), "VerifyCaptcha, err:%v", err)
-	} else if verifyResult.Result != 200 {
-		return nil, errors.Wrapf(xerr.NewErrMsg("验证码校验失败"), "验证码输入错误, 请重新输入!")
-	}
-
-	// 生成token
-	generateTokenLogic := NewGenerateTokenLogic(l.ctx, l.svcCtx)
-	token, err := generateTokenLogic.GenerateToken(&pb.GenerateTokenReq{
-		UserId: user.Id,
-		Email:  user.Email,
+	// 验证验证码
+	_, err := l.svcCtx.CaptchaRpc.VerifyCaptcha(l.ctx, &captchaservice.VerifyCaptchaReq{
+		Email:       in.Email,
+		Captcha:     in.Captcha,
+		CaptchaType: enum.CaptchaLogin,
 	})
 	if err != nil {
-		return nil, errors.Wrapf(xerr.NewErrMsg("生成token失败"), "GenerateToken userId : %d", user.Id)
+		return nil, errors.Wrapf(xerr.NewErrMsg("验证码错误!"), "验证码错误!")
 	}
 
-	// 将token存储到redis
-	if err = l.svcCtx.Redis.SetexCtx(
+	// 查询用户是否存在
+	userInfo, err := l.svcCtx.UserModel.FindOneByEmail(l.ctx, in.Email)
+	if err != nil {
+		return nil, errors.Wrapf(xerr.NewErrMsg("用户登录失败，请检查账号是否注册!"), "用户登录失败，请检查账号是否注册!")
+	}
+
+	// 生成accessToken
+	accessToken, err := l.svcCtx.Jwt.GenerateAccessToken(userInfo.Id, userInfo.Email)
+	if err != nil {
+		return nil, errors.Wrapf(xerr.NewErrMsg("用户登录失败，验证token生成失败!"), "用户登录失败，验证token生成失败!")
+	}
+
+	// 生成refreshToken
+	refreshToken, err := l.svcCtx.Jwt.GenerateRefreshToken(userInfo.Id, userInfo.Email)
+	if err != nil {
+		return nil, errors.Wrapf(xerr.NewErrMsg("用户登录失败，刷新token生成失败!"), "用户登录失败，刷新token生成失败!")
+	}
+
+	// 将accessToken和refreshToken存入redis
+	if err := l.svcCtx.Redis.SetexCtx(
 		l.ctx,
-		l.svcCtx.Config.Redis.Key+":token:"+strconv.Itoa(int(user.Id)),
-		token.AccessToken,
-		int(token.AccessExpire),
+		enum.UserModule+":"+enum.Token+":"+strconv.Itoa(int(userInfo.Id))+":"+enum.AccessToken, accessToken,
+		l.svcCtx.Jwt.AccessTokenExpire,
 	); err != nil {
-		return nil, errors.Wrapf(
-			xerr.NewErrMsg("redis存储token失败"),
-			"SetexCtx token:%s, expire:%d", token.AccessToken, token.AccessExpire,
-		)
+		return nil, errors.Wrapf(xerr.NewErrMsg("用户登录失败，accessToken存入redis失败!"), "用户登录失败，accessToken存入redis失败!")
 	}
-
-	// 更新用户信息
-	user.ClientIp = in.ClientIp   // 客户端ip
-	user.UpdatedTime = time.Now() // 更新时间
-
-	if err := l.svcCtx.UserModel.Update(l.ctx, user); err != nil {
-		return nil, errors.Wrapf(
-			xerr.NewErrMsg("更新用户信息失败！"),
-			"Update user err: %s", err,
-		)
+	if err := l.svcCtx.Redis.SetexCtx(
+		l.ctx,
+		enum.UserModule+":"+enum.Token+":"+strconv.Itoa(int(userInfo.Id))+":"+enum.RefreshToken, refreshToken,
+		l.svcCtx.Jwt.RefreshTokenExpire,
+	); err != nil {
+		return nil, errors.Wrapf(xerr.NewErrMsg("用户登录失败，refreshToken存入redis失败!"), "用户登录失败，refreshToken存入redis失败!")
 	}
 
 	return &pb.LoginResponse{
-		AccessToken:  token.AccessToken,
-		AccessExpire: token.AccessExpire,
-		RefreshAfter: token.RefreshAfter,
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
 	}, nil
 }

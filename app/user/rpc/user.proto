@@ -25,8 +25,7 @@ message LoginByCaptchaRequest {
 // 登录返回Response
 message LoginResponse {
   string accessToken = 1;
-  int64  accessExpire = 2;
-  int64  refreshAfter = 3;
+  string refreshToken = 3;
 }
 
 // 退出登录Request
@@ -92,8 +91,7 @@ message GenerateTokenReq {
 // 生成TokenResponse
 message GenerateTokenResp {
   string accessToken = 1;
-  int64  accessExpire = 2;
-  int64  refreshAfter = 3;
+  string refreshToken = 2;
 }
 
 service UserService {

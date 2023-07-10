@@ -1,7 +1,6 @@
 package base
 
 import (
-	"context"
 	"net/http"
 
 	"giligili/app/user/api/internal/logic/base"
@@ -17,15 +16,13 @@ func LoginByCaptchaHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
-		get := r.Header.Get("X-Real-IP")
-		ctx := context.WithValue(r.Context(), "X-Real-IP", get)
 
-		l := base.NewLoginByCaptchaLogic(ctx, svcCtx)
+		l := base.NewLoginByCaptchaLogic(r.Context(), svcCtx)
 		resp, err := l.LoginByCaptcha(&req)
-		if err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
+		if err == nil {
+			types.Response(w, resp, 200, "操作成功！")
 		} else {
-			httpx.OkJsonCtx(r.Context(), w, resp)
+			types.Response(w, err, -1, "操作失败！")
 		}
 	}
 }

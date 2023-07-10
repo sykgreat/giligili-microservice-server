@@ -7,6 +7,7 @@ package pb;
 //获取验证码
 message GetCaptchaByEmailReq {
     string email = 1;
+    string captchaType = 2;
 }
 
 message GetCaptchaByEmailResp {
@@ -17,10 +18,10 @@ message GetCaptchaByEmailResp {
 message VerifyCaptchaReq {
     string email = 1;
     string captcha = 2;
+    string captchaType = 3;
 }
 
 message VerifyCaptchaResp {
-    int32 result = 1;
 }
 
 service CaptchaService {

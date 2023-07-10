@@ -2,7 +2,7 @@ package logic
 
 import (
 	"context"
-	"giligili/app/email/utils/email"
+	"giligili/common/email"
 	"giligili/common/xerr"
 
 	"giligili/app/email/rpc/internal/svc"

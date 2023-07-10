@@ -10,12 +10,12 @@ info(
 
 type (
 	GetCaptchaRequest {
-		Email string `json:"email"`
+		Email       string `json:"email"`
+		CaptchaType string `json:"captchaType"`
 	}
 
 	GetCaptchaResponse {
-		Code int32  `json:"code"`
-		Msg  string `json:"msg"`
+		Code int32 `json:"code"`
 	}
 )
 
