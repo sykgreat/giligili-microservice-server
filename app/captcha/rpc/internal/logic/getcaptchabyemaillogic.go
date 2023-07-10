@@ -53,7 +53,7 @@ func (l *GetCaptchaByEmailLogic) GetCaptchaByEmail(in *pb.GetCaptchaByEmailReq) 
 	)
 	if err != nil {
 		// 发送失败，删除redis中的验证码
-		if ctx, err := l.svcCtx.Redis.DelCtx(l.ctx, enum.CaptchaModule+":"+enum.Captcha+":"+in.CaptchaType+":"+in.Email); err != nil {
+		if ctx, err := l.svcCtx.Redis.DelCtx(l.ctx, enum.CaptchaModule+enum.Captcha+in.CaptchaType+":"+in.Email); err != nil {
 			return nil, errors.Wrapf(xerr.NewErrMsg("redis删除失败"), "redis del failed! %v", err)
 		} else if ctx == 0 { // 删除失败，说明redis中没有该验证码
 			return nil, errors.Wrapf(xerr.NewErrMsg("没有该验证码"), "no captcha!")
