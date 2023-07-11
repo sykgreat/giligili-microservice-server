@@ -3,10 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"giligili/app/user/rpc/internal/config"
-	"giligili/app/user/rpc/internal/server"
-	"giligili/app/user/rpc/internal/svc"
-	"giligili/app/user/rpc/pb"
+
+	"giligili/app/resource/rpc/internal/config"
+	"giligili/app/resource/rpc/internal/server"
+	"giligili/app/resource/rpc/internal/svc"
+	"giligili/app/resource/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
@@ -15,7 +16,7 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var configFile = flag.String("f", "etc/user.yaml", "the config file")
+var configFile = flag.String("f", "etc/resource.yaml", "the config file")
 
 func main() {
 	flag.Parse()
@@ -25,7 +26,7 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		pb.RegisterUserServiceServer(grpcServer, server.NewUserServiceServer(ctx))
+		pb.RegisterUploadServiceServer(grpcServer, server.NewUploadServiceServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
@@ -35,5 +36,4 @@ func main() {
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
-
 }
