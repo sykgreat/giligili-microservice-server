@@ -16,16 +16,14 @@ type User struct {
 	Birthday   string `json:"birthday"`
 	Sign       string `json:"sign"`
 	ClientIp   string `json:"client_ip"`
-	CreateTime int64  `json:"create_time"`
-	UpdateTime int64  `json:"update_time"`
-	DeleteTime int64  `json:"delete_time"`
+	CreateTime string `json:"create_time"`
+	UpdateTime string `json:"update_time"`
+	DeleteTime string `json:"delete_time"`
 }
 
 type Token struct {
-	AccessToken   string `json:"access_token"`
-	RefreshToken  string `json:"refresh_token"`
-	AccessExpire  int64  `json:"access_expire"`
-	RefreshExpire int64  `json:"refresh_expire"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 type BaseRequest struct {
@@ -71,7 +69,7 @@ type GetUserInfoRequest struct {
 }
 
 type GetUserInfoResponse struct {
-	Data User `json:"data"`
+	User User `json:"data"`
 }
 
 type ChangeDetailRequest struct {

@@ -9,11 +9,13 @@ info(
 )
 
 type (
+	// GetCaptchaRequest 获取验证码请求
 	GetCaptchaRequest {
 		Email       string `json:"email"`
 		CaptchaType string `json:"captchaType"`
 	}
 
+	// GetCaptchaResponse 获取验证码响应
 	GetCaptchaResponse {
 		Code int32 `json:"code"`
 	}
@@ -24,6 +26,9 @@ type (
 	prefix: /captcha
 )
 service captcha {
+	@doc(
+		summary : "获取验证码"
+	)
 	@handler GetCaptcha
 	get /get (GetCaptchaRequest) returns (GetCaptchaResponse)
 }

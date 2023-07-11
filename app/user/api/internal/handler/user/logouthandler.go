@@ -20,9 +20,9 @@ func LogoutHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		l := user.NewLogoutLogic(r.Context(), svcCtx)
 		resp, err := l.Logout(&req)
 		if err == nil {
-			types.Response(w, resp, 200, "操作成功！")
+			types.Response(w, resp, 200, "登出成功！")
 		} else {
-			types.Response(w, err, -1, "操作失败！")
+			types.Response(w, err.Error(), -1, "登出失败！")
 		}
 	}
 }

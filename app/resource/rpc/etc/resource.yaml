@@ -1,0 +1,36 @@
+Name: resource.rpc
+ListenOn: 0.0.0.0:8002
+Etcd:
+  Hosts:
+    - 81.71.31.250:2379
+  Key: resource.rpc
+
+Log:
+  Mode: console
+  Encoding: plain
+
+Mysql:
+  DataSource: root:20020912mysql@tcp(81.71.31.250:3306)/giligili_resource?charset=utf8&parseTime=True&loc=Local
+
+Redis:
+  Host: 81.71.31.250:6379
+  Pass:
+  Type: node
+  Tls: false
+  Key:
+
+Cache:
+  - Host: 81.71.31.250:6379
+    Pass:
+    Type: node
+    Tls: false
+
+Snowflake:
+  timestamp: 0
+  workerId: 0
+  datacenterId: 0
+  sequence: 1
+
+Upload:
+  VideoPath: /Users/mac/Downloads/giligili/resource/video
+  ImgPath: /Users/mac/Downloads/giligili/resource/image

@@ -2,6 +2,10 @@ package logic
 
 import (
 	"context"
+	"giligili/common/password"
+	"giligili/common/xerr"
+	"github.com/pkg/errors"
+	"time"
 
 	"giligili/app/user/rpc/internal/svc"
 	"giligili/app/user/rpc/pb"
@@ -24,7 +28,29 @@ func NewChangePasswordByPasswordLogic(ctx context.Context, svcCtx *svc.ServiceCo
 }
 
 func (l *ChangePasswordByPasswordLogic) ChangePasswordByPassword(in *pb.ChangePasswordByPasswordRequest) (*pb.Response, error) {
-	// todo: add your logic here and delete this line
+	// 查询用户是否存在
+	user, err := l.svcCtx.UserModel.FindOneByEmail(l.ctx, in.Email)
+	if err != nil {
+		return nil, errors.Wrapf(xerr.NewErrMsg("该用户不存在，请检查邮箱是否输入错误！"), "change password failed! %v", err)
+	}
 
+	// 查看原密码是否输入正确
+	err = password.ComparePassword(user.Password, in.OrdPassword)
+	if err != nil {
+		return nil, errors.Wrapf(xerr.NewErrMsg("原密码输入错误，请重新输入！"), "change password failed! %v", err)
+	}
+
+	generatePassword, err := password.GeneratePassword(in.NewPassword)
+	if err != nil {
+		return nil, errors.Wrapf(xerr.NewErrMsg("密码生成失败"), "change password failed! %v", err)
+	}
+
+	// 修改密码
+	user.Password = generatePassword
+	user.UpdatedTime = time.Now()
+	err = l.svcCtx.UserModel.Update(l.ctx, user)
+	if err != nil {
+		return nil, errors.Wrapf(xerr.NewErrMsg("修改密码失败，请重新尝试！"), "change password failed! %v", err)
+	}
 	return &pb.Response{}, nil
 }

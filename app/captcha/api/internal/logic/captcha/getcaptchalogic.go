@@ -2,9 +2,10 @@ package captcha
 
 import (
 	"context"
-	"errors"
 	"giligili/app/captcha/rpc/captchaservice"
 	"giligili/common"
+	"giligili/common/xerr"
+	"github.com/pkg/errors"
 
 	"giligili/app/captcha/api/internal/svc"
 	"giligili/app/captcha/api/internal/types"
@@ -38,8 +39,7 @@ func (l *GetCaptchaLogic) GetCaptcha(req *types.GetCaptchaRequest) (resp *types.
 		CaptchaType: req.CaptchaType,
 	})
 	if err != nil {
-		logx.Error("获取验证码失败: ", err)
-		return nil, err
+		return nil, errors.Wrapf(xerr.NewErrMsg("验证码已发送，请勿重复发送"), "captcha has been sent!")
 	}
 	return &types.GetCaptchaResponse{
 		Code: email.Result,

@@ -61,8 +61,3 @@ func (s *UserServiceServer) ChangePasswordByPassword(ctx context.Context, in *pb
 	l := logic.NewChangePasswordByPasswordLogic(ctx, s.svcCtx)
 	return l.ChangePasswordByPassword(in)
 }
-
-func (s *UserServiceServer) GenerateToken(ctx context.Context, in *pb.GenerateTokenReq) (*pb.GenerateTokenResp, error) {
-	l := logic.NewGenerateTokenLogic(ctx, s.svcCtx)
-	return l.GenerateToken(in)
-}

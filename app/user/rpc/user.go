@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-
 	"giligili/app/user/rpc/internal/config"
 	"giligili/app/user/rpc/internal/server"
 	"giligili/app/user/rpc/internal/svc"
@@ -36,4 +35,5 @@ func main() {
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
+
 }

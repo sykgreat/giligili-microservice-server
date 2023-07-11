@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+option go_package = "./pb";
+
+package pb;
+
+message UploadVideoRequest {
+  int64 videoId = 1;
+  bytes Content = 2;
+}
+
+message UploadImgRequest {
+  bytes Content = 2;
+}
+
+message UploadImgResponse {
+  string url = 1;
+}
+
+message ChangeResourceTitleRequest {
+  int64 videoId = 1;
+  string title = 2;
+}
+
+message DeleteResourceRequest {
+  int64 videoId = 1;
+}
+
+message BaseResponse {
+}
+
+service UploadService {
+  rpc UploadVideo(stream UploadVideoRequest) returns (BaseResponse);
+  rpc UploadImg(stream UploadImgRequest) returns (UploadImgResponse);
+  rpc ChangeResourceTitle( ChangeResourceTitleRequest) returns (BaseResponse);
+  rpc DeleteResource( DeleteResourceRequest) returns (BaseResponse);
+}

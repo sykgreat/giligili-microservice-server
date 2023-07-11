@@ -1,6 +1,10 @@
 package middleware
 
-import "net/http"
+import (
+	"context"
+	"net"
+	"net/http"
+)
 
 type GetUserIpMiddleware struct {
 }
@@ -11,9 +15,21 @@ func NewGetUserIpMiddleware() *GetUserIpMiddleware {
 
 func (m *GetUserIpMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// TODO generate middleware implement function, delete after code implementation
+		remoteAddr := r.RemoteAddr
+		if ip := r.Header.Get("X-Real-IP"); ip != "" {
+			remoteAddr = ip
+		} else if ip = r.Header.Get("X-Forwarded-For"); ip != "" {
+			remoteAddr = ip
+		} else {
+			remoteAddr, _, _ = net.SplitHostPort(remoteAddr)
+		}
 
-		// Passthrough to next handler if need
+		if remoteAddr == "::1" {
+			remoteAddr = "127.0.0.1"
+		}
+
+		r.Header.Set("X-Real-IP", remoteAddr)
+		r = r.WithContext(context.WithValue(r.Context(), "client_ip", remoteAddr))
 		next(w, r)
 	}
 }

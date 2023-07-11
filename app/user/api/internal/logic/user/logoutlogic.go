@@ -2,6 +2,9 @@ package user
 
 import (
 	"context"
+	"giligili/app/user/rpc/userservice"
+	"giligili/common/xerr"
+	"github.com/pkg/errors"
 
 	"giligili/app/user/api/internal/svc"
 	"giligili/app/user/api/internal/types"
@@ -24,7 +27,12 @@ func NewLogoutLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LogoutLogi
 }
 
 func (l *LogoutLogic) Logout(req *types.BaseRequest) (resp *types.BaseResponse, err error) {
-	// todo: add your logic here and delete this line
-
+	// 调用用户登出rpc
+	_, err = l.svcCtx.UserRpc.Logout(l.ctx, &userservice.LogoutRequest{
+		UserId: l.ctx.Value(`userId`).(int64),
+	})
+	if err != nil {
+		return nil, errors.Wrapf(xerr.NewErrMsg("用户登出失败！"), "user logout failed! %v", err)
+	}
 	return
 }

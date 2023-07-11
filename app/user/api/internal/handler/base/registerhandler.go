@@ -20,9 +20,9 @@ func RegisterHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		l := base.NewRegisterLogic(r.Context(), svcCtx)
 		resp, err := l.Register(&req)
 		if err == nil {
-			types.Response(w, resp, 200, "操作成功！")
+			types.Response(w, resp, 200, "注册成功！")
 		} else {
-			types.Response(w, err, -1, "操作失败！")
+			types.Response(w, err.Error(), -1, "注册失败！")
 		}
 	}
 }

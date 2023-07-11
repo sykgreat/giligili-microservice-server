@@ -20,9 +20,9 @@ func ChangePasswordByCaptchaHandler(svcCtx *svc.ServiceContext) http.HandlerFunc
 		l := user.NewChangePasswordByCaptchaLogic(r.Context(), svcCtx)
 		resp, err := l.ChangePasswordByCaptcha(&req)
 		if err == nil {
-			types.Response(w, resp, 200, "操作成功！")
+			types.Response(w, resp, 200, "密码修改成功！")
 		} else {
-			types.Response(w, err, -1, "操作失败！")
+			types.Response(w, err, -1, "密码修改失败！")
 		}
 	}
 }
