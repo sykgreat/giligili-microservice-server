@@ -3,7 +3,7 @@ package logic
 import (
 	"context"
 	"giligili/app/captcha/rpc/captchaservice"
-	"giligili/common"
+	"giligili/common/Verify"
 	"giligili/common/enum"
 	"giligili/common/password"
 	"giligili/common/xerr"
@@ -54,7 +54,7 @@ func (l *RegisterLogic) Register(in *pb.RegisterRequest) (*pb.Response, error) {
 	}
 
 	// 验证密码
-	if common.VerifyPasswordFormat(in.Password) {
+	if Verify.VerifyPasswordFormat(in.Password) {
 		return nil, errors.Wrapf(xerr.NewErrMsg("密码不符合要求!"), "password is incorrect!")
 	}
 
