@@ -3,7 +3,7 @@ package result
 import (
 	"context"
 
-	"looklook/common/xerr"
+	"giligili/common/xerr"
 
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
