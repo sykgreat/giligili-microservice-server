@@ -68,23 +68,23 @@ func (l *RegisterLogic) Register(in *pb.RegisterRequest) (*pb.Response, error) {
 	snowflakeId := l.svcCtx.Snowflake.NextVal() // 生成用户id
 	now := time.Now()
 	u := &user.User{
-		Id:          snowflakeId,
-		Username:    "用户" + strconv.FormatInt(snowflakeId, 10),
-		Email:       in.Email,
-		Password:    generatePassword,
-		Birthday:    now,
-		CreatedTime: now,
-		UpdatedTime: now,
-		Avatar:      "https://i1.hdslb.com/bfs/face/2c72223afa74b0036daee60cd99c069760b653df.jpg@240w_240h_1c_1s_!web-avatar-space-header.avif",
-		SpaceCover:  "https://i0.hdslb.com/bfs/space/cb1c3ef50e22b6096fde67febe863494caefebad.png@2560w_400h_100q_1o.webp",
-		Sign:        "这个人很懒, 什么都没有留下!",
-		Status:      "1",
-		ClientIp:    in.ClientIp,
+		Id:         snowflakeId,
+		Username:   "用户" + strconv.FormatInt(snowflakeId, 10),
+		Email:      in.Email,
+		Password:   generatePassword,
+		Birthday:   now,
+		CreateTime: now,
+		UpdateTime: now,
+		DeleteTime: now,
+		Avatar:     "https://i1.hdslb.com/bfs/face/2c72223afa74b0036daee60cd99c069760b653df.jpg@240w_240h_1c_1s_!web-avatar-space-header.avif",
+		SpaceCover: "https://i0.hdslb.com/bfs/space/cb1c3ef50e22b6096fde67febe863494caefebad.png@2560w_400h_100q_1o.webp",
+		Sign:       "这个人很懒, 什么都没有留下!",
+		Status:     "1",
+		ClientIp:   in.ClientIp,
 	}
 
 	// 插入用户
-	_, err = l.svcCtx.UserModel.Insert(l.ctx, u)
-	if err != nil { // 插入用户失败
+	if _, err = l.svcCtx.UserModel.Insert(l.ctx, nil, u); err != nil { // 插入用户失败
 		return nil, errors.Wrapf(xerr.NewErrMsg("用户注册失败!"), "user register failed! %v", err)
 	}
 

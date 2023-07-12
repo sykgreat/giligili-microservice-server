@@ -47,9 +47,8 @@ func (l *ChangePasswordByPasswordLogic) ChangePasswordByPassword(in *pb.ChangePa
 
 	// 修改密码
 	user.Password = generatePassword
-	user.UpdatedTime = time.Now()
-	err = l.svcCtx.UserModel.Update(l.ctx, user)
-	if err != nil {
+	user.UpdateTime = time.Now()
+	if _, err = l.svcCtx.UserModel.Update(l.ctx, nil, user); err != nil {
 		return nil, errors.Wrapf(xerr.NewErrMsg("修改密码失败，请重新尝试！"), "change password failed! %v", err)
 	}
 	return &pb.Response{}, nil

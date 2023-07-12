@@ -23,9 +23,11 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` bigint unsigned NOT NULL,
-  `created_time` datetime(3) NOT NULL ON UPDATE CURRENT_TIMESTAMP(3),
-  `updated_time` datetime(3) NOT NULL ON UPDATE CURRENT_TIMESTAMP(3),
-  `deleted_time` datetime(3) DEFAULT NULL,
+  `create_time` datetime(3) NOT NULL ON UPDATE CURRENT_TIMESTAMP(3),
+  `update_time` datetime(3) NOT NULL ON UPDATE CURRENT_TIMESTAMP(3),
+  `delete_time` datetime(3) NOT NULL ON UPDATE CURRENT_TIMESTAMP(3) ,
+  `del_state` tinyint NOT NULL DEFAULT '0',
+  `version` bigint NOT NULL DEFAULT '0' COMMENT '版本号',
   `username` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '''用户名''',
   `email` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '''邮箱''',
   `password` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '''密码''',
@@ -38,7 +40,7 @@ CREATE TABLE `user` (
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0',
   `role` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `idx_user_deleted_at` (`deleted_time`) USING BTREE
+  KEY `idx_user_deleted_at` (`delete_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;

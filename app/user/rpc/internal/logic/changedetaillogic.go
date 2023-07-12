@@ -61,8 +61,8 @@ func (l *ChangeDetailLogic) ChangeDetail(in *pb.ChangeDetailRequest) (*pb.Respon
 	}
 
 	// 修改用户信息
-	one.UpdatedTime = time.Now()
-	err = l.svcCtx.UserModel.Update(l.ctx, one)
+	one.UpdateTime = time.Now()
+	_, err = l.svcCtx.UserModel.Update(l.ctx, nil, one)
 	if err != nil {
 		return nil, errors.Wrapf(xerr.NewErrMsg("修改用户信息失败！"), "change user detail failed! %v", err)
 	}
