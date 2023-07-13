@@ -33,6 +33,7 @@ type (
 	resourceModel interface {
 		Insert(ctx context.Context, session sqlx.Session, data *Resource) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*Resource, error)
+		FindOneByVideoId(ctx context.Context, id int64) (*Resource, error)
 		Update(ctx context.Context, session sqlx.Session, data *Resource) (sql.Result, error)
 		UpdateWithVersion(ctx context.Context, session sqlx.Session, data *Resource) error
 		Trans(ctx context.Context, fn func(context context.Context, session sqlx.Session) error) error
@@ -96,6 +97,23 @@ func (m *defaultResourceModel) FindOne(ctx context.Context, id int64) (*Resource
 	var resp Resource
 	err := m.QueryRowCtx(ctx, &resp, resourceIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		query := fmt.Sprintf("select %s from %s where `id` = ? and del_state = ? limit 1", resourceRows, m.table)
+		return conn.QueryRowCtx(ctx, v, query, id, globalkey.DelStateNo)
+	})
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultResourceModel) FindOneByVideoId(ctx context.Context, id int64) (*Resource, error) {
+	resourceIdKey := fmt.Sprintf("%s%v", cacheResourceIdPrefix, id)
+	var resp Resource
+	err := m.QueryRowCtx(ctx, &resp, resourceIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
+		query := fmt.Sprintf("select %s from %s where `vid` = ? and del_state = ? limit 1", resourceRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, id, globalkey.DelStateNo)
 	})
 	switch err {
