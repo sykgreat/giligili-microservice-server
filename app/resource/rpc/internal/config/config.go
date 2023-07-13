@@ -1,7 +1,7 @@
 package config
 
 import (
-	"giligili/common"
+	"giligili/common/Snowflake"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/zrpc"
 )
@@ -16,7 +16,7 @@ type Config struct {
 	Cache cache.CacheConf
 
 	// Snowflake
-	Snowflake common.Snowflake
+	Snowflake Snowflake.Snowflake
 
 	// Upload
 	Upload struct {

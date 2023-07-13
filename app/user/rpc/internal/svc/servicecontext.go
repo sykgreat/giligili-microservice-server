@@ -3,7 +3,7 @@ package svc
 import (
 	"giligili/app/captcha/rpc/captchaservice"
 	"giligili/app/user/rpc/internal/config"
-	"giligili/common"
+	"giligili/common/Snowflake"
 	"giligili/common/jwt"
 	"giligili/model/user"
 	"github.com/zeromicro/go-zero/core/stores/redis"
@@ -16,12 +16,12 @@ type ServiceContext struct {
 	UserModel  user.UserModel
 	Redis      *redis.Redis
 	CaptchaRpc captchaservice.CaptchaService
-	Snowflake  *common.Snowflake
+	Snowflake  *Snowflake.Snowflake
 	Jwt        *jwt.Jwt
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	snowflake, err := common.NewSnowflake(c.Snowflake.WorkerId, c.Snowflake.DatacenterId, c.Snowflake.Sequence)
+	snowflake, err := Snowflake.NewSnowflake(c.Snowflake.WorkerId, c.Snowflake.DatacenterId, c.Snowflake.Sequence)
 	if err != nil {
 		panic(err)
 	}

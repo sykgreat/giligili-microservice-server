@@ -3,7 +3,7 @@ package base
 import (
 	"context"
 	"giligili/app/user/rpc/userservice"
-	"giligili/common"
+	"giligili/common/Verify"
 	"giligili/common/xerr"
 	"github.com/pkg/errors"
 
@@ -29,7 +29,7 @@ func NewLoginByCaptchaLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Lo
 
 func (l *LoginByCaptchaLogic) LoginByCaptcha(req *types.LoginByCaptchaRequest) (resp *types.LoginResponse, err error) {
 	// 验证邮箱格式
-	if format := common.VerifyEmailFormat(req.Email); !format {
+	if format := Verify.VerifyEmailFormat(req.Email); !format {
 		return nil, errors.Wrapf(xerr.NewErrMsg("邮箱格式不正确!"), "email format is incorrect!")
 	}
 

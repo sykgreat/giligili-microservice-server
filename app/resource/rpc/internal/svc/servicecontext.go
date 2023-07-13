@@ -2,7 +2,7 @@ package svc
 
 import (
 	"giligili/app/resource/rpc/internal/config"
-	"giligili/common"
+	"giligili/common/Snowflake"
 	"giligili/common/storage"
 	"giligili/model/resource"
 	"github.com/zeromicro/go-zero/core/stores/redis"
@@ -13,13 +13,13 @@ type ServiceContext struct {
 	Config        config.Config
 	ResourceModel resource.ResourceModel
 	Redis         *redis.Redis
-	Snowflake     *common.Snowflake
+	Snowflake     *Snowflake.Snowflake
 	UploadVideo   *storage.Storage
 	UploadImg     *storage.Storage
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	snowflake, err := common.NewSnowflake(c.Snowflake.WorkerId, c.Snowflake.DatacenterId, c.Snowflake.Sequence)
+	snowflake, err := Snowflake.NewSnowflake(c.Snowflake.WorkerId, c.Snowflake.DatacenterId, c.Snowflake.Sequence)
 	if err != nil {
 		panic(err)
 	}

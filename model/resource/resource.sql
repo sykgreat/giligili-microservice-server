@@ -23,9 +23,11 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `resource`;
 CREATE TABLE `resource` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `created_at` datetime(3) DEFAULT NULL,
-  `updated_at` datetime(3) DEFAULT NULL,
-  `deleted_at` datetime(3) DEFAULT NULL,
+  `create_time` datetime(3) NOT NULL ON UPDATE CURRENT_TIMESTAMP(3),
+  `update_time` datetime(3) NOT NULL ON UPDATE CURRENT_TIMESTAMP(3),
+  `delete_time` datetime(3) NOT NULL ON UPDATE CURRENT_TIMESTAMP(3),
+  `del_state` tinyint NOT NULL DEFAULT '0',
+  `version` bigint NOT NULL DEFAULT '0' COMMENT '版本号',
   `vid` bigint unsigned DEFAULT NULL COMMENT '''所属视频''',
   `uid` bigint unsigned DEFAULT NULL COMMENT '''所属用户''',
   `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '''分P使用的标题''',

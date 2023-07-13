@@ -47,8 +47,8 @@ func (l *GetDetailLogic) GetDetail(in *pb.GetDetailRequest) (*pb.GetDetailRespon
 		Birthday:   one.Birthday.Unix(),
 		Gender:     gender,
 		UserId:     one.Id,
-		CreatedAt:  one.CreatedTime.Unix(),
-		UpdatedAt:  one.UpdatedTime.Unix(),
+		CreatedAt:  one.CreateTime.Unix(),
+		UpdatedAt:  one.UpdateTime.Unix(),
 		ClientIp:   one.ClientIp,
 	}, nil
 }

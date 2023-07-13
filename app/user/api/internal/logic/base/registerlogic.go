@@ -3,7 +3,7 @@ package base
 import (
 	"context"
 	"giligili/app/user/rpc/userservice"
-	"giligili/common"
+	"giligili/common/Verify"
 	"giligili/common/xerr"
 	"github.com/pkg/errors"
 
@@ -29,7 +29,7 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 
 func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.BaseRequest, err error) {
 	// 验证邮箱格式
-	if format := common.VerifyEmailFormat(req.Email); !format {
+	if format := Verify.VerifyEmailFormat(req.Email); !format {
 		return nil, errors.Wrapf(xerr.NewErrMsg("邮箱格式不正确!"), "email format is incorrect!")
 	}
 

@@ -3,7 +3,7 @@ package captcha
 import (
 	"context"
 	"giligili/app/captcha/rpc/captchaservice"
-	"giligili/common"
+	"giligili/common/Verify"
 	"giligili/common/xerr"
 	"github.com/pkg/errors"
 
@@ -29,7 +29,7 @@ func NewGetCaptchaLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetCap
 
 func (l *GetCaptchaLogic) GetCaptcha(req *types.GetCaptchaRequest) (resp *types.GetCaptchaResponse, err error) {
 	// 验证邮箱格式
-	if !common.VerifyEmailFormat(req.Email) {
+	if !Verify.VerifyEmailFormat(req.Email) {
 		return nil, errors.New("邮箱格式不正确")
 	}
 

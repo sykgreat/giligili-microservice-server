@@ -35,7 +35,7 @@ func (l *DeleteResourceLogic) DeleteResource(in *pb.DeleteResourceRequest) (*pb.
 	}
 
 	// 删除视频
-	err = l.svcCtx.ResourceModel.Delete(l.ctx, video.Id)
+	err = l.svcCtx.ResourceModel.Delete(l.ctx, nil, video.Id)
 	if err != nil {
 		return nil, errors.Wrapf(xerr.NewErrMsg("删除视频失败"), "delete resource failed: %v", err)
 	}
