@@ -15,7 +15,6 @@ func TestName(t *testing.T) {
 	parseResult, err := parser.ParseExpr(expr)
 	if err != nil {
 		fmt.Println(err)
-
 		return
 	}
 
