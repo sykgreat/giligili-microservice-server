@@ -20,5 +20,9 @@ func TestName(t *testing.T) {
 	}
 
 	// 打印该ast
-	ast.Print(nil, parseResult)
+	err = ast.Print(nil, parseResult)
+	if err != nil {
+		t.Error(err)
+		return
+	}
 }
