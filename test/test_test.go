@@ -19,7 +19,7 @@ func TestName(t *testing.T) {
 		return
 	}
 
-	// 打印该ast
+	// 打印该ast cell
 	err = ast.Print(nil, parseResult)
 	if err != nil {
 		t.Error(err)
