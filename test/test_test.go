@@ -15,11 +15,10 @@ func TestName(t *testing.T) {
 	parseResult, err := parser.ParseExpr(expr)
 	if err != nil {
 		fmt.Println(err)
-
 		return
 	}
 
-	// 打印该ast cell
+	// 打印该ast cell fds
 	err = ast.Print(nil, parseResult)
 	if err != nil {
 		t.Error(err)
